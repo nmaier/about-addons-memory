@@ -14,7 +14,7 @@ resources = [
     "icon.png", "icon64.png",
     "LICENSE"
     ]
-destination = "repagination.xpi"
+destination = "extension.xpi"
 
 def get_js_requires(scripts):
     known = set()
