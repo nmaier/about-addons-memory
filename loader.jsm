@@ -9,6 +9,7 @@ const {
   classes: Cc,
   interfaces: Ci,
   utils: Cu,
+  results: Cr,
   Constructor: ctor
 } = Components;
 const {
