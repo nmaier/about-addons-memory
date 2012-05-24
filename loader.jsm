@@ -10,12 +10,15 @@ const {
   interfaces: Ci,
   utils: Cu,
   results: Cr,
-  Constructor: ctor
+  Constructor: ctor,
+  manager: Cm
 } = Components;
 const {
   getWeakReference: weak,
   reportError: reportError
 } = Cu;
+
+Cm.QueryInterface(Ci.nsIComponentRegistrar);
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
