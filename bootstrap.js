@@ -9,9 +9,15 @@ function install() {}
 function uninstall() {}
 function startup(data) {
   // will unload itself 
-  Components.utils.import("PATH/TO/loader.jsm");
+  Components.utils.import("chrome://about-addons-memory/content/loader.jsm");
   _setupLoader(data, function real_startup() {
-    require("main");
+    Components.utils.reportError("loader returned!");
+    try {
+      require("main");
+    }
+    catch (ex) {
+      Components.utils.reportError(ex);
+    }
   });
 }
 function shutdown(reason) {

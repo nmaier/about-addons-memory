@@ -3,17 +3,47 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 "use strict";
 
-const {registerOverlay, unloadWindow} = require("windows");
-registerOverlay(
-  "overlay.xul",
-  "chrome://browser/content/browser.xul",
-  function main(window, document) {
-    function $(id) document.getElementById(id);
-    function $$(q) document.querySelector(q);
-    function $$$(q) document.querySelectorAll(q);
-    function fe() document.commandDispatcher.focusedElement;
+function AboutModule() {
+}
+AboutModule.prototype = {
+  uri: Services.io.newURI("chrome://about-addons-memory/content/about.html", null, null),
+  classDescription: "about:addons-memory about module",
+  classID: Components.ID("fda5ee40-a5d6-11e1-b3dd-0800200c9a66"),
+  contractID: '@mozilla.org/network/protocol/about;1?what=addons-memory',
 
-    log(LOG_INFO, "all good!");
-});
+  QueryInterface: XPCOMUtils.generateQI([Ci.nsIAboutModule]),
+
+  newChannel : function(aURI) {
+    let chan = Services.io.newChannelFromURI(this.uri);
+    chan.originalURI = aURI;
+    return chan;
+  },
+  getURIFlags: function(aURI) 0
+};
+
+(function registerComponents() {
+  for (let [,cls] in Iterator([AboutModule])) {
+    try {
+      const factory = {
+        _cls: cls,
+        createInstance: function(outer, iid) {
+          if (outer) {
+            throw Cr.NS_ERROR_NO_AGGREGATION;
+          }
+          return new cls();
+        }
+      };
+      Cm.registerFactory(cls.prototype.classID, cls.prototype.classDescription, cls.prototype.contractID, factory);
+      unload(function() {
+        Cm.unregisterFactory(factory._cls.prototype.classID, factory);
+      });
+    }
+    catch (ex) {
+      log(LOG_ERROR, "failed to register module: " + cls.name, ex);
+    }
+  }
+})();
+
+log(LOG_INFO, "ready");
 
 /* vim: set et ts=2 sw=2 : */

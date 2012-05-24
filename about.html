@@ -1,0 +1,25 @@
+<!doctype html>
+<head>
+  <title>about:addons-memory</title>
+  <meta content="width=device-width; height=device-height;" name="viewport">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <base href="chrome://about-addons-memory/content/">
+  <script src="about.js" type="text/javascript;version=1.8"></script>
+  <link rel="stylesheet" type="text/css" href="about.css">
+</head>
+<body>
+  <h1>about:addons-memory</h1>
+  <table>
+    <thead>
+      <tr>
+        <th id="addon">Add-on</th>
+        <th id="memory" title="Memory usage by add-on">Memory</th>
+        <th title="Stake in add-on memory usage">Addons</th>
+        <th title="Stake in application memory usage">Explicit</th>
+        <th id="bar"></th>
+      </tr>
+    </thead>
+    <tbody id="tbody"><td id="loading" class="loading" colspan="5"></td></tbody>
+  </table>
+  <p class="remark"><strong>Note:</strong> Many Add-ons, especially non-JetPack ones, may include static or dynamic overlays that may add scripts, DOM or styles directly to the browser. Such things cannot be distinguished from the browser itself and hence cannot be counted towards the add-on. As a result the actual add-on memory usage may be a lot higher!</p>
+</body>

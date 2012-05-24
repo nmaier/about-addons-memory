@@ -1,0 +1,63 @@
+@import url(chrome://global/skin/about.css);
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: left;
+}
+thead tr,
+tbody tr:not(:last-child) {
+  border-bottom: 1px dotted black;
+}
+
+td, th {
+  padding: 1ex;
+}
+
+th:not(:last-child),
+td:not(:last-child) {
+  border-right: 1px dotted darkgray;
+}
+
+td > p {
+  padding: 0;
+  margin: 0;
+}
+.loading {
+  height: 96px;
+  background: url(loading.gif) no-repeat center center;
+}
+  
+.total,
+.name {
+  font-weight: bold;
+}
+.id {
+  font-size: smaller;
+  font-style: italic;
+  color: gray;
+}
+.id:hover {
+  color: black;
+}
+
+th#memory {
+  width: 6em;
+}
+th#bar {
+  width: 10em;
+}
+
+th:not([id]) {
+  width: 3em;
+}
+
+.remark {
+  color: red;
+  font-size: small;
+}
+
+.bar {
+  height: 10px;
+  background: navy;
+}
