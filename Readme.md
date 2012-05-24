@@ -1,4 +1,4 @@
-Lightweight Extension SDK (miniSDK)
+about:addons-memory
 ===
 
-This is my personal bootstrap to develop restartless but non-jetpack Mozilla extensions
+Provides an about:addons-memory page, listing the memory usage of all active add-ons
