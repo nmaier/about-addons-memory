@@ -7,14 +7,13 @@ from zipfile import ZipFile, ZIP_STORED, ZIP_DEFLATED
 resources = [
     "install.rdf",
     "chrome.manifest",
-    "*.xul",
-    "locale/*/*.dtd",
-    "locale/*/*.properties",
-    "defaults/preferences/prefs.js",
-    "icon.png", "icon64.png",
+    "*.html",
+    "*.css",
+    "*.gif",
+    "about.js",
     "LICENSE"
     ]
-destination = "extension.xpi"
+destination = "about-addons-memory.xpi"
 
 def get_js_requires(scripts):
     known = set()
