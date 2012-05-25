@@ -21,7 +21,7 @@ const MainThread = Services.tm.mainThread;
 function runSoon(f) MainThread.dispatch(f, 0);
 function minimizeMemory(callback) {
   function notify(i) {
-    Services.obs.notifyObservers(null, "memory-presure", "heap-minimize");
+    Services.obs.notifyObservers(null, "memory-pressure", "heap-minimize");
     if (--i) {
       runSoon(notify.bind(null, i));
     }
