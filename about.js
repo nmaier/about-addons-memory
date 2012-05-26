@@ -177,7 +177,8 @@ function process(addons) {
       let addon = {
         name: "Application",
         id: Services.appinfo.ID,
-        creator: "Mozilla"
+        creator: "Mozilla",
+        iconURL: "chrome://branding/content/icon64.png"
         };
       try {
         let branding = Services.strings.createBundle("chrome://branding/locale/brand.properties");
@@ -246,6 +247,15 @@ function process(addons) {
     for (let [,k] in Iterator(known)) {
       let tr = $e("tr");
       let tdn = $e("td");
+
+      let icon = k.addon.icon64URL || k.addon.iconURL || "chrome://mozapps/skin/extensions/extensionGeneric.png";
+      icon = $e("img", {"src": icon});
+      let iconBox = $e("div", {"class": "icon"});
+      let figure = $e("figure", {"class": "icon"});
+      iconBox.appendChild(icon);
+      figure.appendChild(iconBox);
+      tdn.appendChild(figure);
+
       if (k.addon.homepageURL) {
         let p = $e("p", {"class": "name"});
         p.appendChild($e("a", {"target":"_blank", "href": k.addon.homepageURL}, k.addon.name));

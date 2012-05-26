@@ -41,6 +41,30 @@ td > p {
   color: black;
 }
 
+figure.icon {
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+div.icon {
+  width: 64px;
+  height: 64px;
+  margin: 0;
+  padding: 0;
+  padding-right: 1em;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+.icon > img {
+  margin: 0;
+  padding: 0;
+  min-width: 32px;
+  min-height: 32px;
+  max-width: 64px;
+  max-height: 64px;
+}
+
 th#memory {
   width: 6em;
 }
@@ -58,6 +82,6 @@ th:not([id]) {
 }
 
 .bar {
-  height: 10px;
+  height: 1.5em;
   background: navy;
 }
