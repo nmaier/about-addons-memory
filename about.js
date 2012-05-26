@@ -159,11 +159,16 @@ function process(addons) {
       }
       try {
         let base = resolveURI(a.getResourceURI(".").cloneIgnoringRef());
+        let notes;
+        if (a.id == "about-addons-memory@tn123.org") {
+          notes = ["This add-on. Yep, it uses memory too :p"];
+        }
         known.push({
           addon: a,
           base: base,
           spec: base.spec,
-          bytes: 0
+          bytes: 0,
+          footnotes: notes
           });
       }
       catch (ex) {
@@ -192,8 +197,9 @@ function process(addons) {
         addon: addon,
         base: appuri,
         spec: appuri.spec,
-        bytes: 0
-      });
+        bytes: 0,
+        footnotes: ["This only includes frontend code that has locations tagged, just like any other add-on"]
+        });
     }
 
     if ("collectAllReports" in MemoryReporterManager) {
@@ -244,6 +250,7 @@ function process(addons) {
     }, 0);
 
     let fragment = document.createDocumentFragment();
+    let noteid = 0;
     for (let [,k] in Iterator(known)) {
       let tr = $e("tr");
       let tdn = $e("td");
@@ -256,14 +263,35 @@ function process(addons) {
       figure.appendChild(iconBox);
       tdn.appendChild(figure);
 
+      let footnotes;
+      if (k.footnotes) {
+        footnotes = document.createDocumentFragment();
+        for (let [,note] in Iterator(k.footnotes)) {
+          let id = ++noteid;
+          let fn = $e("sup");
+          // hack: need to construct the absolute uri ourselves in about:
+          fn.appendChild($e("a", {"href": "about:addons-memory#fn_" + id}, id.toFixed(0))); 
+          footnotes.appendChild(fn);
+          let text = $e("p", {"class": "fn", "id": "fn_" + id}, note);
+          let anc = $e("sup", null, "[" + id + "] ");
+          text.insertBefore(anc, text.firstChild);
+          document.body.appendChild(text);
+        }
+      }
+
+      let pname = $e("p", {"class": "name"});
       if (k.addon.homepageURL) {
-        let p = $e("p", {"class": "name"});
-        p.appendChild($e("a", {"target":"_blank", "href": k.addon.homepageURL}, k.addon.name));
-        tdn.appendChild(p);
+        pname.appendChild($e("a", {"target":"_blank", "href": k.addon.homepageURL}, k.addon.name));
       }
       else {
-        tdn.appendChild($e("p", {"class": "name"}, k.addon.name));
+        pname.textContent = k.addon.name;
       }
+      if (footnotes) {
+        console.log(footnotes);
+        pname.appendChild(footnotes);
+      }
+      tdn.appendChild(pname);
+
       tdn.appendChild($e("p", {"class": "creator"}, "by " + k.addon.creator));
       tdn.appendChild($e("p", {"class": "id"}, k.addon.id));
       tr.appendChild(tdn);

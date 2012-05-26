@@ -41,6 +41,14 @@ td > p {
   color: black;
 }
 
+sup {
+  padding-left: 1ex;
+  padding-right: 1em;
+}
+sup > a {
+  text-decoration: none;
+}
+
 figure.icon {
   float: left;
   margin: 0;
