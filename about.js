@@ -163,20 +163,30 @@ function process(addons) {
         console.warn("addon not supported", a.id);
       }
     }
-    
-    // process reports
-    let e = MemoryReporterManager.enumerateReporters();
-    while (e.hasMoreElements()) {
-      let r = e.getNext();
-      if (r instanceof Ci.nsIMemoryReporter) {
-        handleReport(null, r.path, r.kind, r.units, r.amount);
+
+    if ("collectAllReports" in MemoryReporterManager) {
+      // experimental patch support :p
+      let reports = MemoryReporterManager.collectAllReports();
+      for (let i = reports.length; ~--i;) {
+        const {process, path, kind, units, amount} = reports[i];
+        handleReport(null, path, kind, units, amount);
       }
     }
-    e = MemoryReporterManager.enumerateMultiReporters();
-    while (e.hasMoreElements()) {
-      let r = e.getNext();
-      if (r instanceof Ci.nsIMemoryMultiReporter) {
-        r.collectReports(handleReport, null);
+    else {
+      // process reports
+      let e = MemoryReporterManager.enumerateReporters();
+      while (e.hasMoreElements()) {
+        let r = e.getNext();
+        if (r instanceof Ci.nsIMemoryReporter) {
+          handleReport(null, r.path, r.kind, r.units, r.amount);
+        }
+      }
+      e = MemoryReporterManager.enumerateMultiReporters();
+      while (e.hasMoreElements()) {
+        let r = e.getNext();
+        if (r instanceof Ci.nsIMemoryMultiReporter) {
+          r.collectReports(handleReport, null);
+        }
       }
     }
 
