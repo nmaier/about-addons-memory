@@ -156,12 +156,28 @@ function process(addons) {
           addon: a,
           base: base,
           spec: base.spec,
-          bytes: 0,
+          bytes: 0
           });
       }
       catch (ex) {
         console.warn("addon not supported", a.id);
       }
+    }
+    // Forcefeed the "Application" add-on
+    {
+      let appuri = resolveURI(Services.io.newURI("chrome://global/content/", null, null));
+      appuri.path = appuri.path.replace("chrome/toolkit/content/global/global.xul", "");
+      console.log(appuri.spec);
+      known.push({
+        addon: {
+          name: "Application",
+          id: "application",
+          creator: "Mozilla"
+        },
+        base: appuri,
+        spec: appuri.spec,
+        bytes: 0
+      });
     }
 
     if ("collectAllReports" in MemoryReporterManager) {
