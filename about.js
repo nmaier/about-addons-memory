@@ -174,12 +174,21 @@ function process(addons) {
     {
       let appuri = resolveURI(Services.io.newURI("chrome://global/content/", null, null));
       appuri.path = appuri.path.replace("chrome/toolkit/content/global/global.xul", "");
+      let addon = {
+        name: "Application",
+        id: Services.appinfo.ID,
+        creator: "Mozilla"
+        };
+      try {
+        let branding = Services.strings.createBundle("chrome://branding/locale/brand.properties");
+        addon.name = branding.GetStringFromName("brandFullName");
+        addon.creator = branding.GetStringFromName("vendorShortName");
+      }
+      catch (ex) {
+        console.error("failed to get branding", ex);
+      }
       known.push({
-        addon: {
-          name: "Application",
-          id: "application",
-          creator: "Mozilla"
-        },
+        addon: addon,
         base: appuri,
         spec: appuri.spec,
         bytes: 0
