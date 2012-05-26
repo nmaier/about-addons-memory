@@ -73,12 +73,19 @@ function resolveURI(uri) {
   switch (uri.scheme) {
   case "jar":
   case "file":
+    if (uri instanceof Ci.nsIJARURI) {
+      return resolveURI(uri.JARFile);
+    }
     return uri;
   case "chrome":
-    return ChromeRegistry.convertChromeURL(uri);
+    return resolveURI(ChromeRegistry.convertChromeURL(uri));
   case "resource":
-    return Services.io.newURI(ResProtoHandler.resolveURI(uri), null, null);
+    return resolveURI(Services.io.newURI(ResProtoHandler.resolveURI(uri), null, null));
   case "about":
+    if (uri.spec == "about:blank") {
+      // hack: also map about:blank... to the app
+      return resolveURI(resolveAboutURI(Services.io.newURI("about:memory", null, null)));
+    }
     return resolveURI(resolveAboutURI(uri));
   default:
     throw new Error("cannot handle");
@@ -151,7 +158,7 @@ function process(addons) {
         continue;
       }
       try {
-        let base = a.getResourceURI(".").cloneIgnoringRef();
+        let base = resolveURI(a.getResourceURI(".").cloneIgnoringRef());
         known.push({
           addon: a,
           base: base,
@@ -167,7 +174,6 @@ function process(addons) {
     {
       let appuri = resolveURI(Services.io.newURI("chrome://global/content/", null, null));
       appuri.path = appuri.path.replace("chrome/toolkit/content/global/global.xul", "");
-      console.log(appuri.spec);
       known.push({
         addon: {
           name: "Application",
