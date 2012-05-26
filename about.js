@@ -178,7 +178,9 @@ function process(addons) {
     // Forcefeed the "Application" add-on
     {
       let appuri = resolveURI(Services.io.newURI("chrome://global/content/", null, null));
-      appuri.path = appuri.path.replace("chrome/toolkit/content/global/global.xul", "");
+      if (!/omni.ja/.test(appuri.spec)) {
+        appuri.path = appuri.path.replace("chrome/toolkit/content/global/global.xul", "");
+      }
       let addon = {
         name: "Application",
         id: Services.appinfo.ID,
