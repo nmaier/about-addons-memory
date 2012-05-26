@@ -13,7 +13,7 @@
                 <em:minVersion>15.0a</em:minVersion>
                 <em:maxVersion>15.*</em:maxVersion>
                 <!-- Use the raw link for updates so we we can use SSL. -->
-                <em:updateLink>https://raw.github.com/nmaier/about-addons-memory/master/xpi/about-addons-memory-2.xpi</em:updateURL>
+                <em:updateLink>https://raw.github.com/nmaier/about-addons-memory/master/xpi/about-addons-memory-2.xpi</em:updateLink>
               </RDF:Description>
             </em:targetApplication>
           </RDF:Description>
