@@ -11,7 +11,6 @@ function startup(data) {
   // will unload itself 
   Components.utils.import("chrome://about-addons-memory/content/loader.jsm");
   _setupLoader(data, function real_startup() {
-    Components.utils.reportError("loader returned!");
     try {
       require("main");
     }
