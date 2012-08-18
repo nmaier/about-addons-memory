@@ -4,6 +4,17 @@ import os, sys, re
 from glob import glob
 from zipfile import ZipFile, ZIP_STORED, ZIP_DEFLATED
 
+try:
+    from xpisign.context import ZipFileMinorCompression as Minor
+except ImportError:
+    from warnings import warn
+    warn("No optimal compression available; install xpisign")
+    class Minor(object):
+        def __enter__():
+            pass
+        def __exit__(*args):
+            pass
+
 resources = [
     "install.rdf",
     "chrome.manifest",
@@ -54,6 +65,7 @@ class ZipOutFile(ZipFile):
     def __exit__(self, type, value, traceback):
         self.close()
 
-with ZipOutFile(destination) as zp:
-    for f in sorted(get_files(resources), key=str.lower):
-        zp.write(f)
+with Minor():
+    with ZipOutFile(destination) as zp:
+        for f in sorted(get_files(resources), key=str.lower):
+            zp.write(f)
