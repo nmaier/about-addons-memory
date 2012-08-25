@@ -59,7 +59,7 @@ if os.path.exists(destination):
 
 class ZipOutFile(ZipFile):
     def __init__(self, zfile):
-        ZipFile.__init__(self, zfile, "w", ZIP_STORED)
+        ZipFile.__init__(self, zfile, "w", ZIP_DEFLATED)
     def __enter__(self):
         return self
     def __exit__(self, type, value, traceback):
