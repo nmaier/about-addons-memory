@@ -30,6 +30,10 @@ tbody tr:not(:last-child) {
   border-bottom: 1px dotted black;
 }
 
+tr.disabled {
+  opacity: 0.6;
+}
+
 td, th {
   padding: 1ex;
 }

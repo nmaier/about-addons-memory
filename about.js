@@ -185,6 +185,7 @@ function process(addons) {
       }
       let addon = {
         name: "Application",
+        isActive: true,
         id: Services.appinfo.ID,
         creator: "Mozilla",
         iconURL: iconURL
@@ -208,9 +209,6 @@ function process(addons) {
 
     // process addons
     for (let [,a] in Iterator(addons)) {
-      if (!a.isActive) {
-        continue;
-      }
       try {
         let base = resolveURI(a.getResourceURI(".").cloneIgnoringRef());
         let notes;
@@ -281,6 +279,9 @@ function process(addons) {
     let noteid = 0;
     for (let [,k] in Iterator(known)) {
       let tr = $e("tr");
+      if (!k.addon.isActive) {
+        tr.className = "disabled";
+      }
       let tdn = $e("td");
 
       let icon = k.addon.icon64URL || k.addon.iconURL || "chrome://mozapps/skin/extensions/extensionGeneric.png";
