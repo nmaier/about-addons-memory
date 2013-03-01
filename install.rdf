@@ -12,7 +12,6 @@
 
     <em:bootstrap>true</em:bootstrap>
     <em:type>2</em:type>
-    <em:updateURL>https://raw.github.com/nmaier/about-addons-memory/master/xpi/update.rdf</em:updateURL>
 
     <!-- Firefox -->
     <em:targetApplication>
