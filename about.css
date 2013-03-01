@@ -1,5 +1,14 @@
 @import url(chrome://global/skin/about.css);
 
+body {
+  max-width: 66%;
+}
+@media (max-width: 800px) {
+  body {
+    max-width: 95%;
+  }
+}
+
 table {
   border-collapse: collapse;
   width: 100%;
