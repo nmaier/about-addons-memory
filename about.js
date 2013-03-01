@@ -156,7 +156,7 @@ function process(addons) {
     }
   }
   function mapSpecToAddon(spec, bytes) {
-    if (/omni.ja$/.test(spec)) {
+    if (/omni\.ja$|\.apk$/.test(spec)) {
       known[0].bytes += bytes;
       return true;
     }
@@ -175,15 +175,19 @@ function process(addons) {
   try {
     // Forcefeed the "Application" add-on
     {
-      let appuri = resolveURI(Services.io.newURI("chrome://global/content/", null, null));
-      if (!/omni.ja/.test(appuri.spec)) {
+      let appuri = resolveURI(Services.io.newURI("about:config", null, null));
+      let iconURL = "chrome://branding/content/icon64.png"
+      if (!/omni\.ja|\.apk$/.test(appuri.spec)) {
         appuri.path = appuri.path.replace("chrome/toolkit/content/global/global.xul", "");
+      }
+      if (/\.apk$/.test(appuri.spec)) {
+        iconURL = "chrome://branding/content/favicon64.png"
       }
       let addon = {
         name: "Application",
         id: Services.appinfo.ID,
         creator: "Mozilla",
-        iconURL: "chrome://branding/content/icon64.png"
+        iconURL: iconURL
         };
       try {
         let branding = Services.strings.createBundle("chrome://branding/locale/brand.properties");
