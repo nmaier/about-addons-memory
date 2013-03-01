@@ -87,6 +87,8 @@ function resolveURI(uri) {
       return resolveURI(resolveAboutURI(Services.io.newURI("about:memory", null, null)));
     }
     return resolveURI(resolveAboutURI(uri));
+  case "view-source":
+    return resolveURI(Services.io.newURI(uri.path, null, null));
   default:
     throw new Error("cannot handle");
   }
@@ -108,7 +110,12 @@ function $e(tag, attrs, text) {
 function process(addons) {
   const known = [];
   const compartments = Object.create(null);;
-  const re_map = /^explicit\/(?:js\/compartment\(\[System Principal\], (.+)\)|dom\/workers\(\)\/worker\((.+)?,|window-objects\/top\(((?:about|chrome):.*?),)/;
+  const re_jscompartment = /^explicit\/.*?\/non-window-global\/compartment\((.*?)\)/;
+  const re_windowobject = /^explicit\/(?:.*\/)?window-objects\/top\((.*?), id=\d+\)\/active\//;
+  const re_worker = /^explicit\/(?:.*\/)?workers\/workers\(\)\/worker\((.*?), 0x[\da-f]+\)/;
+  const re_explicit = /^explicit\//;
+  const re_compartment = /^(\[System Principal\], )?(?:in.*?\?ownedBy=)?(.+?)(?: \(from: (.+?)(?::\d+)?)?$/;
+  const re_schemes = /^(?:about|chrome|file|jar|resource)/;
   let totalExplicit = 0;
 
   function handleReport(process, path, kind, units, amount, description) {
@@ -116,18 +123,27 @@ function process(addons) {
       totalExplicit = amount;
       return;
     }
-    let spec = path.match(re_map);
+    let m, spec;
+    if (m = path.match(re_jscompartment)) {
+      m = m[1].match(re_compartment);
+      let syscomp = !!m[1];
+      spec = m[2];
+      if (m[3] && (!syscomp || !re_schemes.test(spec))) {
+        spec = m[3].split(" -> ").pop();
+      }
+    }
+    else if (m = path.match(re_windowobject)) {
+      spec = m[1];
+    }
+    else if (m = path.match(re_worker)) {
+      spec = m[1];
+    }
+
     if (!spec) {
       return;
     }
+    spec = spec.replace(/\\/g, "/").trim();
     try {
-      for (let i = spec.length; --i;) {
-        if (spec[i]) {
-          spec = spec[i].replace(/\\/g, "/").trim();
-          break;
-        }
-      }
-      
       if (spec in compartments) {
         compartments[spec] += amount;
       }
@@ -140,41 +156,23 @@ function process(addons) {
     }
   }
   function mapSpecToAddon(spec, bytes) {
-      for (let [,k] in Iterator(known)) {
-          if (spec.lastIndexOf(k.spec, 0) == 0) {
-              k.bytes += bytes;
-              return true;
-          }
+    if (/omni.ja$/.test(spec)) {
+      known[0].bytes += bytes;
+      return true;
+    }
+    for (let [,k] in Iterator(known)) {
+      if (spec.lastIndexOf(k.spec, 0) == 0) {
+        k.bytes += bytes;
+        return true;
       }
-      return false;
+    }
+    console.log("not", spec, known);
+    return false;
   }
   function createBar(tr, type, bytes, total, maxb) {
   }
 
   try {
-    // process addons
-    for (let [,a] in Iterator(addons)) {
-      if (!a.isActive) {
-        continue;
-      }
-      try {
-        let base = resolveURI(a.getResourceURI(".").cloneIgnoringRef());
-        let notes;
-        if (a.id == "about-addons-memory@tn123.org") {
-          notes = ["This add-on. Yep, it uses memory too :p"];
-        }
-        known.push({
-          addon: a,
-          base: base,
-          spec: base.spec,
-          bytes: 0,
-          footnotes: notes
-          });
-      }
-      catch (ex) {
-        console.warn("addon not supported", a.id);
-      }
-    }
     // Forcefeed the "Application" add-on
     {
       let appuri = resolveURI(Services.io.newURI("chrome://global/content/", null, null));
@@ -202,6 +200,30 @@ function process(addons) {
         bytes: 0,
         footnotes: ["This only includes frontend code that has locations tagged, just like any other add-on"]
         });
+    }
+
+    // process addons
+    for (let [,a] in Iterator(addons)) {
+      if (!a.isActive) {
+        continue;
+      }
+      try {
+        let base = resolveURI(a.getResourceURI(".").cloneIgnoringRef());
+        let notes;
+        if (a.id == "about-addons-memory@tn123.org") {
+          notes = ["This add-on. Yep, it uses memory too :p"];
+        }
+        known.push({
+          addon: a,
+          base: base,
+          spec: base.spec,
+          bytes: 0,
+          footnotes: notes
+          });
+      }
+      catch (ex) {
+        console.warn("addon not supported", a.id);
+      }
     }
 
     if ("collectAllReports" in MemoryReporterManager) {
