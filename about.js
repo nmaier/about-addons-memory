@@ -169,16 +169,19 @@ function process(addons) {
     console.log("not", spec, known);
     return false;
   }
-  function createBar(tr, type, bytes, total, maxb) {
-  }
 
   try {
     // Forcefeed the "Application" add-on
     {
       let appuri = resolveURI(Services.io.newURI("about:config", null, null));
       let iconURL = "chrome://branding/content/icon64.png"
-      if (!/omni\.ja|\.apk$/.test(appuri.spec)) {
-        appuri.path = appuri.path.replace("chrome/toolkit/content/global/global.xul", "");
+      try {
+        if (!/omni\.ja|\.apk$/.test(appuri.spec)) {
+          appuri.path = appuri.path.replace("chrome/toolkit/content/global/global.xul", "");
+        }
+      }
+      catch (ex) {
+        console.log("failed to get proper appuri; assuming omnijar");
       }
       if (/\.apk$/.test(appuri.spec)) {
         iconURL = "chrome://branding/content/favicon64.png"
