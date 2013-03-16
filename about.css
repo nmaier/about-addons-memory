@@ -38,6 +38,9 @@ td, th {
   padding: 1ex;
 }
 
+th[title] {
+  cursor: help;
+}
 th:not(:last-child),
 td:not(:last-child) {
   border-right: 1px dotted darkgray;
