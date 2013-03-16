@@ -1,1 +1,3 @@
 content about-addons-memory ./
+locale about-addons-memory  en-US ./
+locale about-addons-memory  de de/

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE html [
+  <!ENTITY % aboutDTD SYSTEM "chrome://about-addons-memory/locale/about.dtd">
+  %aboutDTD;
+  <!ENTITY % defaboutDTD SYSTEM "chrome://about-addons-memory/content/about.dtd">
+  %defaboutDTD;
+]>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>about:addons-memory</title>
+    <meta content="width=800" name="viewport"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <script src="chrome://about-addons-memory/content/about.js" type="text/javascript;version=1.8"></script>
+    <link rel="stylesheet" type="text/css" href="chrome://about-addons-memory/content/about.css"/>
+  </head>
+  <body data-footnote-locations="&footnote.locations.label;" data-footnote-thisaddon="&footnote.thisaddon.label;" data-by="&by.label;">
+    <h1>about:addons-memory</h1>
+    <table>
+      <thead>
+        <tr>
+          <th id="addon">&addon.label;</th>
+          <th id="memory" title="&usage.tip;">&usage.label;</th>
+          <th title="&addons.tip;">&addons.label;</th>
+          <th title="&explicit.tip;">&explicit.label;</th>
+          <th id="bar"></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"><td id="loading" class="loading" colspan="5"></td></tbody>
+    </table>
+    <p><button onclick="location.reload();">&minimize.label;</button></p>
+    <p class="remark"><strong>&note.label;</strong> &remark.count.label;</p>
+    <p class="remark">&remark.conclusion.label;</p>
+  </body>
+</html>

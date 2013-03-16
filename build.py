@@ -18,7 +18,8 @@ except ImportError:
 resources = [
     "install.rdf",
     "chrome.manifest",
-    "*.html",
+    "*.xhtml",
+    "*.dtd", "*/*.dtd",
     "*.css",
     "*.gif",
     "about.js",

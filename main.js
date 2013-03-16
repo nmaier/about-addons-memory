@@ -6,7 +6,7 @@
 function AboutModule() {
 }
 AboutModule.prototype = {
-  uri: Services.io.newURI("chrome://about-addons-memory/content/about.html", null, null),
+  uri: Services.io.newURI("chrome://about-addons-memory/content/about.xhtml", null, null),
   classDescription: "about:addons-memory about module",
   classID: Components.ID("fda5ee40-a5d6-11e1-b3dd-0800200c9a66"),
   contractID: '@mozilla.org/network/protocol/about;1?what=addons-memory',

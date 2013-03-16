@@ -18,6 +18,10 @@ const MemoryReporterManager = Cc["@mozilla.org/memory-reporter-manager;1"].getSe
 const ResProtoHandler = Services.io.getProtocolHandler("resource").QueryInterface(Ci.nsIResProtocolHandler);
 const MainThread = Services.tm.mainThread;
 
+function _(id) {
+  return document.body.getAttribute("data-" + id);
+}
+
 function runSoon(f) MainThread.dispatch(f, 0);
 function minimizeMemory(callback) {
   function notify(i) {
@@ -206,7 +210,7 @@ function process(addons) {
         base: appuri,
         spec: appuri.spec,
         bytes: 0,
-        footnotes: ["This only includes frontend code that has locations tagged, just like any other add-on"]
+        footnotes: [_("footnote-locations")]
         });
     }
 
@@ -216,7 +220,7 @@ function process(addons) {
         let base = resolveURI(a.getResourceURI(".").cloneIgnoringRef());
         let notes;
         if (a.id == "about-addons-memory@tn123.org") {
-          notes = ["This add-on. Yep, it uses memory too :p"];
+          notes = [_("footnote-thisaddon")];
         }
         known.push({
           addon: a,
@@ -324,7 +328,7 @@ function process(addons) {
       }
       tdn.appendChild(pname);
 
-      tdn.appendChild($e("p", {"class": "creator"}, "by " + k.addon.creator));
+      tdn.appendChild($e("p", {"class": "creator"}, _("by") + " " + k.addon.creator));
       tdn.appendChild($e("p", {"class": "id"}, k.addon.id));
       tr.appendChild(tdn);
       tr.appendChild($e("td", {"data-value": k.bytes}, formatBytes(k.bytes)));
