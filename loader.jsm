@@ -13,10 +13,9 @@ const {
   Constructor: ctor,
   manager: Cm
 } = Components;
-const {
-  getWeakReference: weak,
-  reportError: reportError
-} = Cu;
+
+const weak = Cu.getWeakReference.bind(Cu);
+const reportError = Cu.reportError.bind(Cu);
 
 Cm.QueryInterface(Ci.nsIComponentRegistrar);
 
