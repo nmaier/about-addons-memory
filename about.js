@@ -114,7 +114,7 @@ function $e(tag, attrs, text) {
 function process(addons) {
   const known = [];
   const compartments = Object.create(null);;
-  const re_jscompartment = /^explicit\/.*?\/non-window-global\/compartment\((.*?)\)/;
+  const re_jscompartment = /^explicit\/.*?(?:\/non-window-global|js-non-window)\/.*?\/compartment\((.*?)\)/;
   const re_windowobject = /^explicit\/(?:.*\/)?window-objects\/top\((.*?), id=\d+\)\/active\//;
   const re_worker = /^explicit\/(?:.*\/)?workers\/workers\(\)\/worker\((.*?), 0x[\da-f]+\)/;
   const re_explicit = /^explicit\//;
