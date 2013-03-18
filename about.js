@@ -323,7 +323,6 @@ function process(addons) {
         pname.textContent = k.addon.name;
       }
       if (footnotes) {
-        console.log(footnotes);
         pname.appendChild(footnotes);
       }
       tdn.appendChild(pname);
