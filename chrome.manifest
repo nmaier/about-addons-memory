@@ -1,3 +1,6 @@
 content about-addons-memory ./
 locale about-addons-memory  en-US en-US/
 locale about-addons-memory  de de/
+locale about-addons-memory  fr fr/
+locale about-addons-memory  sv-SE sv-SE/
+locale about-addons-memory  zh-CN zh-CN/

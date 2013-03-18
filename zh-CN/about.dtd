@@ -1,0 +1,14 @@
+<!ENTITY addon.label "附加组件">
+<!ENTITY usage.label "占用">
+<!ENTITY usage.tip "附加组件的内存占用数">
+<!ENTITY addons.label "附加组件">
+<!ENTITY addons.tip "与所有附加组件的总内存占用数相比的相对占用率">
+<!ENTITY explicit.label "精确">
+<!ENTITY explicit.tip "与应用程序的总内存占用数相比的相对占用率">
+<!ENTITY minimize.label "最小化内存使用">
+<!ENTITY note.label "注意:">
+<!ENTITY remark.count.label "很多附加组件特别是非采用JetPack的,可能包含会将脚本、DOM或样式直接添加到浏览器的静态层或动态层,这些都无法从浏览器本身中区分出来,因此无法计入该附加组件，结果将使得附加组件实际占用的内存比此处报告的要高。">
+<!ENTITY remark.conclusion.label "内存使用少于数百兆字节的附加组件通常不会引发问题,至少从内存使用的角度看是这样的。但是一个附加组件真的必需使用大量内存吗，而且/或者一个附加组件的内存使用应该随时间稳步增长而不管你关闭掉多少个标签页,无论如何，这*可能*指出了一个问题。">
+<!ENTITY footnote.locations.label "以上数据仅包含标记位置的前端代码,不包含任何页面内容(网页,图像等),与其它附加组件相似。">
+<!ENTITY footnote.thisaddon.label "对了,本扩展也会占用一些内存。">
+<!ENTITY by.label "由">
