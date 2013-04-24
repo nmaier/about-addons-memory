@@ -120,11 +120,11 @@ function process(addons) {
   const re_explicit = /^explicit\//;
   const re_compartment = /^(\[System Principal\], )?(?:in.*?\?ownedBy=)?(.+?)(?: \(from: (.+?)(?::\d+)?)?$/;
   const re_schemes = /^(?:about|chrome|file|jar|resource)/;
-  let totalExplicit = 0;
+  let rss = 0;
 
   function handleReport(process, path, kind, units, amount, description) {
-    if (path == "explicit") {
-      totalExplicit = amount;
+    if (path == "resident") {
+      rss = amount;
       return;
     }
     let m, spec;
@@ -334,7 +334,7 @@ function process(addons) {
 
       let pa = k.bytes / totalAddons;
       let spa = (pa * 100.0).toFixed(1) + "%";
-      let pe = k.bytes / totalExplicit;
+      let pe = k.bytes / rss;
       let spe = (pe * 100.0).toFixed(1) + "%";
       let scale = (k.bytes / maxAddonBytes * 100.0).toFixed(1) + "%";
 
@@ -351,7 +351,7 @@ function process(addons) {
     tr.appendChild($e("td", null, "Total"));
     tr.appendChild($e("td", null, formatBytes(totalAddons)));
     tr.appendChild($e("td", null, "100%"));
-    tr.appendChild($e("td", null, (totalAddons / totalExplicit * 100.0).toFixed(1) + "%"));
+    tr.appendChild($e("td", null, (totalAddons / rss * 100.0).toFixed(1) + "%"));
     fragment.appendChild(tr);
 
     $("tbody").appendChild(fragment);
