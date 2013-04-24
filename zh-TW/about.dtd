@@ -1,0 +1,14 @@
+<!ENTITY addon.label "附加元件">
+<!ENTITY usage.label "使用情況">
+<!ENTITY usage.tip "個別附加元件的記憶體使用量">
+<!ENTITY addons.label "所有元件">
+<!ENTITY addons.tip "相對於所有附加元件的記憶體使用率">
+<!ENTITY explicit.label "外顯">
+<!ENTITY explicit.tip "相對於整個應用程式所用的記憶體使用率（包括網站之類）">
+<!ENTITY minimize.label "最小化記憶體使用量">
+<!ENTITY note.label "請注意：">
+<!ENTITY remark.count.label "有不少附加元件——特別是非 JetPack 的類型——可能含有靜態或動態覆蓋（overlay），會加入腳本或 DOM 樣式到瀏覽器。這些東西等於瀏覽器不可分割的一部分，因此不會被算進附加元件那邊。其結果就是附加元件實際上吃掉的記憶體可能比上面列出來的還要多！">
+<!ENTITY remark.conclusion.label "一般而言使用記憶體沒破百（MB）的附加元件都不成問題，至少從記憶體用量的角度可以這麼說。不過若附加元件確實大量耗用記憶體，而且（或者）附加元件的記憶體用量不管關掉多少分頁都還是隨時間穩定增加，那麼「可能」表示有某些問題存在。">
+<!ENTITY footnote.locations.label "這一項只包含標有路徑的前端程式碼，就像其他的附加元件一樣。任何網頁內容（網站、圖片等）都未包含在內。">
+<!ENTITY footnote.thisaddon.label "就是這個套件。沒錯，它自己也會吃記憶體。">
+<!ENTITY by.label "作者：">
