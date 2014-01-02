@@ -164,6 +164,7 @@ function process(addons) {
       console.error(spec.toSource(), ex);
     }
   }
+
   function mapSpecToAddon(spec, bytes) {
     if (/omni\.ja$|\.apk$/.test(spec)) {
       known[0].bytes += bytes;
@@ -175,97 +176,10 @@ function process(addons) {
         return true;
       }
     }
-    console.log("not", spec, known);
     return false;
   }
 
-  try {
-    // Forcefeed the "Application" add-on
-    {
-      let appuri = resolveURI(Services.io.newURI("about:config", null, null));
-      let iconURL = "chrome://branding/content/icon64.png"
-      try {
-        if (!/omni\.ja|\.apk$/.test(appuri.spec)) {
-          appuri.path = appuri.path.replace("chrome/toolkit/content/global/global.xul", "");
-        }
-      }
-      catch (ex) {
-        console.log("failed to get proper appuri; assuming omnijar");
-      }
-      if (/\.apk$/.test(appuri.spec)) {
-        iconURL = "chrome://branding/content/favicon64.png"
-      }
-      let addon = {
-        name: "Application",
-        isActive: true,
-        id: Services.appinfo.ID,
-        creator: "Mozilla",
-        iconURL: iconURL
-        };
-      try {
-        let branding = Services.strings.createBundle("chrome://branding/locale/brand.properties");
-        addon.name = branding.GetStringFromName("brandFullName");
-        addon.creator = branding.GetStringFromName("vendorShortName");
-      }
-      catch (ex) {
-        console.error("failed to get branding", ex);
-      }
-      known.push({
-        addon: addon,
-        base: appuri,
-        spec: appuri.spec,
-        bytes: 0,
-        footnotes: [_("footnote-locations")]
-        });
-    }
-
-    // process addons
-    for (let [,a] in Iterator(addons)) {
-      try {
-        let base = resolveURI(a.getResourceURI(".").cloneIgnoringRef());
-        let notes;
-        if (a.id == "about-addons-memory@tn123.org") {
-          notes = [_("footnote-thisaddon")];
-        }
-        known.push({
-          addon: a,
-          base: base,
-          spec: base.spec,
-          bytes: 0,
-          footnotes: notes
-          });
-      }
-      catch (ex) {
-        console.warn("addon not supported", a.id);
-      }
-    }
-
-    if ("collectAllReports" in MemoryReporterManager) {
-      // experimental patch support :p
-      let reports = MemoryReporterManager.collectAllReports();
-      for (let i = reports.length; ~--i;) {
-        const {process, path, kind, units, amount} = reports[i];
-        handleReport(null, path, kind, units, amount);
-      }
-    }
-    else {
-      // process reports
-      let e = MemoryReporterManager.enumerateReporters();
-      while (e.hasMoreElements()) {
-        let r = e.getNext();
-        if (r instanceof Ci.nsIMemoryReporter) {
-          handleReport(null, r.path, r.kind, r.units, r.amount);
-        }
-      }
-      e = MemoryReporterManager.enumerateMultiReporters();
-      while (e.hasMoreElements()) {
-        let r = e.getNext();
-        if (r instanceof Ci.nsIMemoryMultiReporter) {
-          r.collectReports(handleReport, null);
-        }
-      }
-    }
-
+  function process() {
     // map reports to addons
     for (let [c, b] in Iterator(compartments)) {
       try {
@@ -364,6 +278,104 @@ function process(addons) {
     let (l = $("loading")) {
       l.parentNode.removeChild(l);
     }
+  }
+
+  try {
+    // Forcefeed the "Application" add-on
+    {
+      let appuri = resolveURI(Services.io.newURI("about:config", null, null));
+      let iconURL = "chrome://branding/content/icon64.png"
+      try {
+        if (!/omni\.ja|\.apk$/.test(appuri.spec)) {
+          appuri.path = appuri.path.replace("chrome/toolkit/content/global/global.xul", "");
+        }
+      }
+      catch (ex) {
+        console.log("failed to get proper appuri; assuming omnijar");
+      }
+      if (/\.apk$/.test(appuri.spec)) {
+        iconURL = "chrome://branding/content/favicon64.png"
+      }
+      let addon = {
+        name: "Application",
+        isActive: true,
+        id: Services.appinfo.ID,
+        creator: "Mozilla",
+        iconURL: iconURL
+        };
+      try {
+        let branding = Services.strings.createBundle("chrome://branding/locale/brand.properties");
+        addon.name = branding.GetStringFromName("brandFullName");
+        addon.creator = branding.GetStringFromName("vendorShortName");
+      }
+      catch (ex) {
+        console.error("failed to get branding", ex);
+      }
+      known.push({
+        addon: addon,
+        base: appuri,
+        spec: appuri.spec,
+        bytes: 0,
+        footnotes: [_("footnote-locations")]
+        });
+    }
+
+    // process addons
+    for (let [,a] in Iterator(addons)) {
+      try {
+        let base = resolveURI(a.getResourceURI(".").cloneIgnoringRef());
+        let notes;
+        if (a.id == "about-addons-memory@tn123.org") {
+          notes = [_("footnote-thisaddon")];
+        }
+        known.push({
+          addon: a,
+          base: base,
+          spec: base.spec,
+          bytes: 0,
+          footnotes: notes
+          });
+      }
+      catch (ex) {
+        console.warn("addon not supported", a.id);
+      }
+    }
+
+    // process reports
+    if ("nsIMemoryMultiReporter" in Ci) {
+      console.log("taking uni");
+      let e = MemoryReporterManager.enumerateReporters();
+      while (e.hasMoreElements()) {
+        let r = e.getNext();
+        if (r instanceof Ci.nsIMemoryReporter) {
+          handleReport(null, r.path, r.kind, r.units, r.amount);
+        }
+      }
+      e = MemoryReporterManager.enumerateMultiReporters();
+      while (e.hasMoreElements()) {
+        let r = e.getNext();
+        if (r instanceof Ci.nsIMemoryMultiReporter) {
+          r.collectReports(handleReport, null);
+        }
+      }
+      process();
+    }
+    else if ("enumerateReporters" in MemoryReporterManager) {
+      console.log("taking no-uni");
+      let e = MemoryReporterManager.enumerateReporters();
+      while (e.hasMoreElements()) {
+        let r = e.getNext();
+        if (r instanceof Ci.nsIMemoryReporter) {
+          r.collectReports(handleReport, null);
+        }
+      }
+      process();
+    }
+    else {
+      console.log("taking getReports");
+      MemoryReporterManager.getReports(handleReport, null, process, null);
+    }
+
   }
   catch (ex) {
     console.error(ex);
