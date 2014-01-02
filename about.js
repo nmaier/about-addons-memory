@@ -23,7 +23,7 @@ function _(id) {
 }
 
 function runSoon(f) MainThread.dispatch(f, 0);
-function minimizeMemory(callback) {
+function minimizeMemoryUsage(callback) {
   function notify(i) {
     Services.obs.notifyObservers(null, "memory-pressure", "heap-minimize");
     if (--i) {
@@ -33,7 +33,12 @@ function minimizeMemory(callback) {
       runSoon(callback);
     }
   }
-  notify(3);
+  if ("minimizeMemoryUsage" in MemoryReporterManager) {
+    MemoryReporterManager.minimizeMemoryUsage(callback);
+  }
+  else {
+    notify(3);
+  }
 }
 
 function formatBytes(b) {
@@ -367,7 +372,7 @@ function process(addons) {
 
 addEventListener("load", function load() {
   removeEventListener("load", load, false);
-  minimizeMemory(function() Cu.import("resource://gre/modules/AddonManager.jsm", {}).AddonManager.getAllAddons(process));
+  Cu.import("resource://gre/modules/AddonManager.jsm", {}).AddonManager.getAllAddons(process);
 }, false);
 
 /* vim: set et ts=2 sw=2 : */
