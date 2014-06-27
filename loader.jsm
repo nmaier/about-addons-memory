@@ -133,7 +133,7 @@ const lazy = XPCOMUtils.defineLazyGetter;
         sandboxPrototype: scope,
         wantXRays: false
       });
-      Services.scriptloader.loadSubScript(mod, scope);
+      Services.scriptloader.loadSubScript(mod, scope, "utf-8");
     }
     catch (ex) {
       log(LOG_ERROR, "failed to load " + mod, ex);
