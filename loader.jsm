@@ -39,6 +39,7 @@ const lazy = XPCOMUtils.defineLazyGetter;
   dlsg("memrm", "@mozilla.org/memory-reporter-manager;1", "nsIMemoryReporterManager");
   dlsg("mime", "@mozilla.org/uriloader/external-helper-app-service;1", "nsIMIMEService");
   dlsg("mimeheader", "@mozilla.org/network/mime-hdrparam;1", "nsIMIMEHeaderParam");
+  dlsg("sysprincipal", "@mozilla.org/systemprincipal;1", "nsIPrincipal");
   dlsg("uuid", "@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");
   
   const Instances = exports.Instances = {
@@ -112,35 +113,42 @@ const lazy = XPCOMUtils.defineLazyGetter;
     };
   } 
 
-  const _registry = Object.create(null);
-  exports.require = function require(module) {
-    module = BASE_PATH + module + ".js";
+  const _registry = new Map();
+  exports.require = function require(mod) {
+    mod = BASE_PATH + mod + ".js";
    
     // already loaded?
-    if (module in _registry) {
-      return _registry[module];
+    let scope = _registry.get(mod);
+    if (scope) {
+      return scope.exports;
     }
 
-    // try to load the module
-    log(LOG_DEBUG, "going to load: " + module);
-    let scope = {exports: Object.create(null)};
+    // try to load the mod
+    log(LOG_DEBUG, "going to load: " + mod);
+    let scope = Object.create(exports);
+    scope.exports = Object.create(null);
     try {
-      Services.scriptloader.loadSubScript(module, scope);
+      scope = Cu.Sandbox(Services.sysprincipal, {
+        sandboxName: mod,
+        sandboxPrototype: scope,
+        wantXRays: false
+      });
+      Services.scriptloader.loadSubScript(mod, scope);
     }
     catch (ex) {
-      log(LOG_ERROR, "failed to load " + module, ex);
+      log(LOG_ERROR, "failed to load " + mod, ex);
       throw ex;
     }
 
-    _registry[module] = scope.exports;
-    log(LOG_DEBUG, "loaded module: " + module);
+    _registry.set(mod, scope);
+    log(LOG_DEBUG, "loaded module: " + mod);
 
     return scope.exports;
   } 
-  exports.lazyRequire = function lazyRequire(module) {
+  exports.lazyRequire = function lazyRequire(mod) {
     function lazyBind(props, prop) {
-      log(LOG_DEBUG, "lazily binding " + props + " for module " + module);
-      let m = require(module);
+      log(LOG_DEBUG, "lazily binding " + props + " for module " + mod);
+      let m = require(mod);
       for (let [,p] in Iterator(props)) {
         delete this[p];
         this[p] = m[p];
@@ -149,9 +157,9 @@ const lazy = XPCOMUtils.defineLazyGetter;
     }
 
     // Already loaded?
-    if (module in _registry) {
-      log(LOG_DEBUG, "not lazily binding " + module + "; already loaded");
-      return _registry[module];
+    let scope = _registry.get(mod);
+    if (scope) {
+      return scope.exports;
     }
 
     let props = Array.slice(arguments, 1);
@@ -165,9 +173,12 @@ const lazy = XPCOMUtils.defineLazyGetter;
   }
 
   unload(function() {
-    let keys = Object.keys(_registry);
-    for (let i = keys.length; ~(--i);) {
-      delete _registry[keys[i]];
+    for (let [mod, scope] of _registry) {
+      _registry.delete(mod);
+      Cu.nukeSandbox(scope);
+    }
+    if (_registry.clear) {
+      _registry.clear();
     }
     // unload ourselves
     Cu.unload(SELF_PATH);
