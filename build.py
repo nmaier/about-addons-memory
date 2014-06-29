@@ -17,7 +17,7 @@ resources = [
     "locale/*/*.properties",
     "defaults/preferences/prefs.js",
     "icon.png", "icon64.png",
-    "LICENSE"
+    "LICENSE.txt"
     ]
 destination = "extension.xpi"
 
