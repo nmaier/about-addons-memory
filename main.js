@@ -3,7 +3,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 "use strict";
 
-const {registerOverlay, unloadWindow} = require("windows");
+const {registerOverlay, unloadWindow} = require("sdk/windows");
 registerOverlay(
   "overlay.xul",
   "chrome://browser/content/browser.xul",
