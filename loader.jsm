@@ -84,9 +84,9 @@ const lazy = XPCOMUtils.defineLazyGetter;
   var LOG_DEBUG = 0, LOG_INFO = 0, LOG_ERROR = 0;
 
   var _unloaders = [];
-  let _runUnloader = function _runUnloader(fn, args) {
+  let _runUnloader = function _runUnloader(fn) {
       try {
-        fn.apply(null, args);
+        fn();
       }
       catch (ex) {
         log(LOG_ERROR, "unloader failed", ex);
@@ -108,7 +108,7 @@ const lazy = XPCOMUtils.defineLazyGetter;
     }
     _unloaders.push(fn);
     return function() {
-      _runUnloader(fn, arguments);
+      _runUnloader(fn);
       _unloaders = _unloaders.filter(function(c) c != fn);
     };
   } 
