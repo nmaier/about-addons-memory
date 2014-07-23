@@ -1,19 +1,13 @@
 # vim: set nosmartindent et ts=4 sw=4 :
 
-import os, sys, re
-from glob import glob
-from zipfile import ZipFile, ZIP_STORED, ZIP_DEFLATED
+import os
+import re
+import sys
 
-try:
-    from xpisign.context import ZipFileMinorCompression as Minor
-except ImportError:
-    from warnings import warn
-    warn("No optimal compression available; install xpisign")
-    class Minor(object):
-        def __enter__():
-            pass
-        def __exit__(*args):
-            pass
+from contextlib import contextmanager as ctx
+from glob import glob
+
+from zipfile import ZipFile, ZIP_STORED, ZIP_DEFLATED
 
 resources = [
     "install.rdf",
@@ -23,9 +17,21 @@ resources = [
     "*.css",
     "*.gif",
     "about.js",
-    "LICENSE"
+    "LICENSE.txt"
     ]
 destination = "about-addons-memory.xpi"
+
+
+try:
+    from xpisign.context import ZipFileMinorCompression as Minor
+except ImportError:
+    from warnings import warn
+    warn("No optimal compression available; install xpisign")
+
+    @ctx
+    def Minor():
+        yield
+
 
 def get_js_requires(scripts):
     known = set()
@@ -43,29 +49,34 @@ def get_js_requires(scripts):
                 scripts += m,
     return set(scripts)
 
+
 def get_files(resources):
     for r in get_js_requires(("bootstrap.js", "loader.jsm")):
         yield r
     for r in resources:
         if os.path.isfile(r):
             yield r
-        else:
-            for g in glob(r):
-                yield g
+            continue
+        for g in glob(r):
+            yield g
+
+
+class ZipOutFile(ZipFile):
+    def __init__(self, zfile):
+        ZipFile.__init__(self, zfile, "w", ZIP_DEFLATED)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.close()
+
 
 if os.path.exists(destination):
     print >>sys.stderr, destination, "is in the way"
     sys.exit(1)
 
-class ZipOutFile(ZipFile):
-    def __init__(self, zfile):
-        ZipFile.__init__(self, zfile, "w", ZIP_DEFLATED)
-    def __enter__(self):
-        return self
-    def __exit__(self, type, value, traceback):
-        self.close()
-
-with Minor():
-    with ZipOutFile(destination) as zp:
-        for f in sorted(get_files(resources), key=str.lower):
-            zp.write(f)
+with Minor(), ZipOutFile(destination) as zp:
+    for f in sorted(get_files(resources), key=str.lower):
+        compress_type = ZIP_STORED if f.endswith(".png") else ZIP_DEFLATED
+        zp.write(f, compress_type=compress_type)

@@ -12,11 +12,10 @@ Instances.register("XHR", "@mozilla.org/xmlextras/xmlhttprequest;1", "nsIXMLHttp
  * unloaded or the add-on is shut down
  */
 exports.unloadWindow = function unloadWindow(window, fn) {
-  let args = arguments;
   let handler = unload(function() {
     window.removeEventListener('unload', handler, false);
     try {
-      fn.apply(null, args);
+      fn();
     }
     catch (ex) {
       log(LOG_ERROR, "failed to run window unloader", ex);
