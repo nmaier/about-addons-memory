@@ -373,7 +373,12 @@ function process(addons) {
     }
     else {
       console.log("taking getReports");
-      MemoryReporterManager.getReports(handleReport, null, process, null);
+      if (MemoryReporterManager.getReports.length == 5) {
+        MemoryReporterManager.getReports(handleReport, null, process, null, false);
+      }
+      else {
+        MemoryReporterManager.getReports(handleReport, null, process, null);
+      }
     }
 
   }
