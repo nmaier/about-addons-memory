@@ -87,9 +87,9 @@ exports.log = function(level, message, exception) {
     if (stackMsg) {
       message += "\n" + stackMsg;
     }
-    
+
     let category = "component javascript";
-    
+
     if (exception) {
       if (exception instanceof Ci.nsIScriptError) {
         sourceName = exception.sourceName;
@@ -104,7 +104,7 @@ exports.log = function(level, message, exception) {
       }
       else {
         sourceName = exception.fileName || sourceName;
-        lineNumber = exception.lineNumber || lineNumber; 
+        lineNumber = exception.lineNumber || lineNumber;
       }
     }
 

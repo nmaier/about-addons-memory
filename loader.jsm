@@ -125,7 +125,7 @@ const lazy = XPCOMUtils.defineLazyGetter;
 
     // try to load the mod
     log(LOG_DEBUG, "going to load: " + mod);
-    let scope = Object.create(exports);
+    scope = Object.create(exports);
     scope.exports = Object.create(null);
     try {
       scope = Cu.Sandbox(Services.sysprincipal, {
