@@ -7,7 +7,7 @@
     <em:id>about-addons-memory@tn123.org</em:id>
     <em:name>about:addons-memory</em:name>
     <em:description>Adds an about:addons-memory page that details add-on memory usage</em:description>
-    <em:version>9</em:version>
+    <em:version>10</em:version>
     <em:creator>Nils Maier</em:creator>
 
     <em:bootstrap>true</em:bootstrap>
@@ -36,7 +36,7 @@
       <Description>
         <em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
         <em:minVersion>2.25</em:minVersion>
-        <em:maxVersion>2.33.*</em:maxVersion>
+        <em:maxVersion>2.32.*</em:maxVersion>
       </Description>
     </em:targetApplication>
   </Description>
