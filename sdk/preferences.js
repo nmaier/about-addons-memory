@@ -9,8 +9,6 @@
  * - Implement enumerate/getChildren
  */
 
-const global = this;
-
 const {
   PREF_INVALID: INVALID,
   PREF_STRING: STR,
@@ -33,7 +31,7 @@ function createProxy(branch) {
         throw new Error("Cannot use this name as a preference");
       }
       log(LOG_DEBUG, "prefproxy: setting pref " + branch.branch +  name);
-      branch.set(name);
+      branch.set(name, value);
     },
     delete: function(name) {
       if (name in branch) {
@@ -63,10 +61,10 @@ function Branch(branch) {
   }
   this.branch = branch.root;
 
-  let getType = this.getType = function(pref) branch.getPrefType(pref);
-  this.has = function(pref) getType(pref) != INVALID;
-  this.isChanged = function(pref) branch.prefHasUserValue(pref);
-  this.isDefault = function(pref) !this.isChanged();
+  let getType = this.getType = pref => branch.getPrefType(pref);
+  this.has = pref => getType(pref) != INVALID;
+  this.isChanged = pref => branch.prefHasUserValue(pref);
+  this.isDefault = pref => !this[pref].isChanged();
   let get = this.get = function(pref, defaultValue) {
     switch (getType(pref)) {
       case STR:
@@ -84,19 +82,21 @@ function Branch(branch) {
     }
   };
   this.set = function(pref, value) {
-    if (value == null || value == undefined) {
+    if (value === null || value === undefined) {
       log(LOG_DEBUG, "ignoring null value for pref " + pref);
       return;
     }
     switch (value.constructor.name) {
       case "Number":
         if (!isFinite(value)) {
-          let msg = "attempt to set an invalid number to pref " + branch.root + pref + ": " + value;
+          let msg = "attempt to set an invalid number to pref " + branch.root +
+            pref + ": " + value;
           log(LOG_DEBUG, msg);
           throw new Error(msg);
         }
         if (value % 1) {
-          log(LOG_DEBUG, "coercing float to int before setting pref " + branch.root + pref + ": " + value);
+          log(LOG_DEBUG, "coercing float to int before setting pref " +
+              branch.root + pref + ": " + value);
           value = parseInt(value);
         }
         branch.setIntPref(pref, value);
@@ -107,7 +107,8 @@ function Branch(branch) {
         break;
 
       default:
-        log(LOG_DEBUG, "coercing object into string before setting pref " + branch.root + pref);
+        log(LOG_DEBUG, "coercing object into string before setting pref " +
+            branch.root + pref);
         value = value.toString();
         // fall through
 
@@ -125,21 +126,23 @@ function Branch(branch) {
   };
   this.observe = function(pref, callback, defaultValue) {
     let obs = {
-      observe: function(s,t,d) {
+      observe: function(s, t, d) {
+        [s, t, d] = [s, t, d];
         callback(pref, get(pref, defaultValue));
        }
     };
     branch.addObserver(pref, obs, false);
-    unload(function() branch.removeObserver(pref, obs));
+    unload(() => branch.removeObserver(pref, obs));
     obs.observe();
   };
 }
 
 (function setDefaultPrefs() {
   let branch = new Branch(Services.prefs.getDefaultBranch(""));
-  let scope = {pref: function(key, val) branch.set(key, val)};
+  let scope = {pref: (key, val) => branch.set(key, val)};
   try {
-    Services.scriptloader.loadSubScript(BASE_PATH + "defaults/preferences/prefs.js", scope);
+    Services.scriptloader.loadSubScript(BASE_PATH +
+                                        "defaults/preferences/prefs.js", scope);
   }
   // errors here should not kill addon
   catch (ex) {
@@ -151,7 +154,7 @@ var globalPrefs = createProxy(new Branch(""));
 var prefs = globalPrefs.extensions[ADDON.id];
 
 Object.defineProperties(exports, {
-  prefs: {get: function() prefs, enumerable: true},
+  prefs: {get: () => prefs, enumerable: true},
   globalPrefs: {value: globalPrefs, enumerable: true}
 });
 

@@ -5,7 +5,10 @@
 
 const global = this;
 
-Instances.register("ScriptError", "@mozilla.org/scripterror;1", "nsIScriptError", "init");
+Instances.register("ScriptError",
+                   "@mozilla.org/scripterror;1",
+                   "nsIScriptError",
+                   "init");
 
 var UNKNOWN_STACK = {
   stackMsg: "",
@@ -33,7 +36,8 @@ function prepareStack(stack) {
   let message = [];
   for (let i = 0; stack && i < 6; ++i, stack = stack.caller) {
     if (stack.lineNumber) {
-      message.push("\t" + (stack.name || "[anonymous]") + "() @ " + stack.filename + ":" + stack.lineNumber);
+      message.push("\t" + (stack.name || "[anonymous]") + "() @ " +
+                   stack.filename + ":" + stack.lineNumber);
     }
     else {
       message.push("\t[native @ " + (stack.languageName || "???" ) + "]");
@@ -46,8 +50,7 @@ function prepareStack(stack) {
 
 const {
   errorFlag,
-  warningFlag,
-  exceptionFlag
+  warningFlag
 } = Ci.nsIScriptError;
 
 Object.defineProperties(exports, {
@@ -55,12 +58,12 @@ Object.defineProperties(exports, {
   LOG_INFO: {value: 1, enumerable: true},
   LOG_ERROR: {value: 2, enumerable: true},
   LOG_NONE: {value: 0x7FFFFFFF},
-  PREFIX: {get: function() prefix},
-  setLogLevel: {value: function(l) global.level = l}
+  PREFIX: {get: () => prefix},
+  setLogLevel: {value: l => global.level = l}
 });
 
 var prefix = ADDON.name;
-var level = exports.LOG_NONE;
+global.level = exports.LOG_NONE;
 
 exports.log = function(level, message, exception) {
   try {
@@ -68,7 +71,8 @@ exports.log = function(level, message, exception) {
       return;
     }
 
-    if (message instanceof Ci.nsIScriptError || message instanceof Ci.nsIException || message.fileName) {
+    if (message instanceof Ci.nsIScriptError ||
+        message instanceof Ci.nsIException || message.fileName) {
       exception = message;
       message = exception.message;
     }
@@ -137,6 +141,6 @@ exports.log = function(level, message, exception) {
     reportError(ex);
     reportError(exception || message);
   }
-}
+};
 
 /* vim: set et ts=2 sw=2 : */
