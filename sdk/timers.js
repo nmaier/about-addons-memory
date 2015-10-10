@@ -3,7 +3,6 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 "use strict";
 
-const global = this;
 Instances.register("Timer", "@mozilla.org/timer;1", "nsITimer", "init");
 
 const {
@@ -13,14 +12,17 @@ const {
 
 const CLAMP = globalPrefs.dom.min_timeout_value;
 
-function uuid() Services.uuid.generateUUID().toString();
+function uuid() {
+  return Services.uuid.generateUUID().toString();
+}
 
 let timers = Object.create(Object.prototype, {
   create: {value: function(type, func, delay, args) {
     let id = uuid();
     let timer = new Instances.Timer({
       observe: function() {
-        log(LOG_DEBUG, "timer " + id + "fired delay: " + delay + " type:" + type);
+        log(LOG_DEBUG, "timer " + id + "fired delay: " + delay +
+            " type:" + type);
         try {
           func.apply(null, args);
         }
@@ -32,7 +34,8 @@ let timers = Object.create(Object.prototype, {
       }
     }, delay, type);
     this[id] = timer;
-    log(LOG_DEBUG, "timer " + id + " created delay: " + delay + " type:" + type);
+    log(LOG_DEBUG, "timer " + id + " created delay: " + delay +
+        " type:" + type);
     return id;
   }},
   destroy: {value: function(id) {
@@ -46,7 +49,7 @@ let timers = Object.create(Object.prototype, {
   }}
 });
 unload(function unload_timers() {
-  for (let [id,timer] in Iterator(timers)) {
+  for (let [id,timer] in new Iterator(timers)) {
       try {
         timer.cancel();
       } catch (ex) {}
@@ -65,7 +68,8 @@ Object.defineProperties(exports, {
   createInterval: {
     value: function createInterval(func, delay /*, ... */) {
       let args = Array.slice(2);
-      return timers.create(TYPE_REPEATING_SLACK, func, Math.max(delay, CLAMP), args);
+      return timers.create(TYPE_REPEATING_SLACK, func,
+                           Math.max(delay, CLAMP), args);
     },
     enumerable: true
   },
@@ -77,7 +81,7 @@ Object.defineProperties(exports, {
     enumerable: true
   },
   destroy: {
-    value: function destroyTimeout(id) timers.destroy(id),
+    value: id => timers.destroy(id),
     enumerable: true
   }
 });

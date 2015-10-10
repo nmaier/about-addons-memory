@@ -1,0 +1,20 @@
+{
+  "browser": true,
+  "curly": true,
+  "esnext": true,
+  "freeze": true,
+  "globalstrict": true,
+  "moz": true,
+  "noarg": true,
+  "nonbsp": true,
+  "strict": true,
+  "undef": true,
+  "unused": true,
+  "validthis": true,
+  "maxlen": 80,
+  "predef": ["Components", "Cc", "Ci", "Cr", "Cu", "require", "log",
+             "LOG_DEBUG", "LOG_ERROR", "LOG_INFO", "prefs", "lazyRequire",
+             "lazy", "Services", "Instances", "XPCOMUtils", "exports",
+             "reportError", "ADDON", "unload", "BASE_PATH", "Iterator",
+             "globalPrefs", "weak"]
+}

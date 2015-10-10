@@ -8,7 +8,7 @@ var bundleFlush = null;
 function Bundle(uri) {
   lazy(this, "_bundle", function() {
     if (!bundleFlush) {
-      bundleFlush = unload(function() Services.strings.flushBundles());
+      bundleFlush = unload(() => Services.strings.flushBundles());
     }
     return Services.strings.createBundle(uri);
   });
@@ -24,6 +24,6 @@ Bundle.prototype = {
   }
 };
 
-Object.defineProperty(exports, "getBundle", {value: function(uri) new Bundle(uri)});
+Object.defineProperty(exports, "getBundle", {value: uri => new Bundle(uri)});
 
 /* vim: set et ts=2 sw=2 : */

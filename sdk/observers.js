@@ -31,28 +31,29 @@ const manager = {
   remove: function remove(topic, cb) {
     let observers = this.topics[topic];
     if (!observers) {
-      log(LOG_ERROR, "tried to remove a non-existant observer for topic: " + topic);
+      log(LOG_ERROR,
+          "tried to remove a non-existant observer for topic: " + topic);
       return;
     }
-    observers = this.topics[topic] = observers.filter(function(fn) fn != cb);
+    observers = this.topics[topic] = observers.filter(fn => fn != cb);
     if (!observers.length) {
       delete this.topics[topic];
       Services.obs.removeObserver(this, topic, false);
     }
   },
   teardown: function teardown() {
-    for (let [k,v] in Iterator(this.topics)) {
-      v.splice(0);
+    for (let k in this.topics) {
+      this.topics[k].splice(0);
       delete this.topics[k];
       Services.obs.removeObserver(this, k, false);
     }
   }
 };
-unload(function() manager.teardown());
+unload(() => manager.teardown());
 
 Object.defineProperties(exports, {
-  add: {value: function add(topic, cb) manager.add(topic, cb)},
-  remove: {value: function remove(topic, cb) manager.remove(topic, cb)}
+  add: {value: (topic, cb) => manager.add(topic, cb)},
+  remove: {value: (topic, cb) => manager.remove(topic, cb)}
 });
 
 /* vim: set et ts=2 sw=2 : */
