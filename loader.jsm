@@ -5,7 +5,7 @@
 
 var EXPORTED_SYMBOLS = ["BASE_PATH", "require", "unload", "_setupLoader"];
 
-const {
+var {
   classes: Cc,
   interfaces: Ci,
   utils: Cu,
@@ -14,15 +14,15 @@ const {
   manager: Cm
 } = Components;
 
-const weak = Cu.getWeakReference.bind(Cu);
-const reportError = Cu.reportError.bind(Cu);
+var weak = Cu.getWeakReference.bind(Cu);
+var reportError = Cu.reportError.bind(Cu);
 
 Cm.QueryInterface(Ci.nsIComponentRegistrar);
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 
-const lazy = XPCOMUtils.defineLazyGetter;
+var lazy = XPCOMUtils.defineLazyGetter;
 
 // hide our internals
 // Since require() uses .scriptloader, the loaded require scopes will have
