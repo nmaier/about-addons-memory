@@ -56,9 +56,17 @@ const CoThreadBase = {
     let f = this._func;
     let ctx = this._thisCtx;
     let callf = this._callf;
+    const isStar = !('send' in g);
     try {
       for (let i = 0; i < y; ++i) {
-        if (!callf(ctx, g.next(), this._idx++, f)) {
+        let next = g.next();
+        if (isStar) {
+          if (next.done) {
+            throw "complete";
+          }
+          next = next.value;
+        }
+        if (!callf(ctx, next, this._idx++, f)) {
           throw 'complete';
         }
       }
@@ -212,7 +220,7 @@ exports.CoThreadListWalker = function CoThreadListWalker(func, arrayOrGenerator,
       for (let i of arrayOrGenerator) {
         yield i;
       }
-    });
+    })();
   }
   else {
     this._generator = arrayOrGenerator;
