@@ -275,7 +275,6 @@ function process(addons) {
 
     $("tbody").appendChild(fragment);
     $("loading").parentNode.removeChild($("loading"));
-    }
   }
 
   try {
