@@ -19,7 +19,7 @@ resources = [
     "about.js",
     "LICENSE.txt"
     ]
-destination = "about-addons-memory.xpi"
+destination = "xpi/about-addons-memory.xpi"
 
 
 try:
