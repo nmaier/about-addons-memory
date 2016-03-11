@@ -9,6 +9,13 @@
  * - Implement enumerate/getChildren
  */
 
+try {
+  Instances.register("SupportsString", "@mozilla.org/supports-string;1", "nsISupportsString");
+}
+catch (ex) {
+  // ignore
+}
+
 const {
   PREF_INVALID: INVALID,
   PREF_STRING: STR,
@@ -116,7 +123,7 @@ function Branch(branch) {
         {
           let str = new Instances.SupportsString();
           str.data = value;
-          branch.setComplexValue(pref, str);
+          branch.setComplexValue(pref, Ci.nsISupportsString, str);
         }
         break;
     }
@@ -139,7 +146,16 @@ function Branch(branch) {
 
 (function setDefaultPrefs() {
   let branch = new Branch(Services.prefs.getDefaultBranch(""));
-  let scope = {pref: (key, val) => branch.set(key, val)};
+  let scope = {
+    pref: (key, val) => {
+      try {
+        branch.set(key, val);
+      }
+      catch (ex) {
+        Cu.reportError(ex);
+      }
+    }
+  };
   try {
     Services.scriptloader.loadSubScript(BASE_PATH +
                                         "defaults/preferences/prefs.js", scope);
