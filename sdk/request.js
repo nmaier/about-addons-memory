@@ -89,6 +89,24 @@ exports.request = (method, url, data, options) => {
         catch (ex) {
           log(LOG_DEBUG, "Failed to set callbacks", ex);
         }
+        if (req.channel instanceof Ci.nsIHttpChannel) {
+          if (options.cookies) {
+            for (let n of Object.keys(options.cookies)) {
+              req.channel.setRequestHeader("Cookie", `${encodeURIComponent(n)}=${encodeURIComponent(options.cookies[n])}`, true);
+            }
+          }
+          if (options.headers) {
+            for (let n of Object.keys(options.headers)) {
+              let h = options.headers[n];
+              let merge = true;
+              if (Array.isArray(h)) {
+                merge = !!h[1];
+                h = h[0];
+              }
+              req.channel.setRequestHeader(n, h, merge);
+            }
+          }
+        }
       }
       req.send(data || null);
     }
