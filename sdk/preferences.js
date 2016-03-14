@@ -24,7 +24,7 @@ const {
 } = Ci.nsIPrefBranch;
 
 function createProxy(branch) {
-  return Proxy.create({
+  return new Proxy(branch, {
     get: function(receiver, name) {
       if (name in branch) {
         log(LOG_DEBUG, "prefproxy: returning plain " + name);
