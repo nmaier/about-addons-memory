@@ -19,36 +19,38 @@ const {
 } = Ci.nsIPrefBranch;
 
 function createProxy(branch) {
-  return Proxy.create({
-    get: function(receiver, name) {
-      if (name in branch) {
-        log(LOG_DEBUG, "prefproxy: returning plain " + name);
-        return branch[name];
+  var prefProxy = new Proxy({},	  
+{
+    get: function(obj, prop) {
+      if (prop in branch) {
+        log(LOG_DEBUG, "prefproxy: returning plain " + prop);
+        return branch[prop];
       }
-      log(LOG_DEBUG, "prefproxy: returning pref " + branch.branch + name);
-      return branch.get(name);
+      log(LOG_DEBUG, "prefproxy: returning pref " + branch.branch + prop);
+      return branch.get(prop);
     },
-    set: function(receiver, name, value) {
-      if (name in branch) {
+    set: function(obj, prop, value) {
+      if (prop in branch) {
         throw new Error("Cannot use this name as a preference");
       }
-      log(LOG_DEBUG, "prefproxy: setting pref " + branch.branch +  name);
-      branch.set(name);
+      log(LOG_DEBUG, "prefproxy: setting pref " + branch.branch +  prop);
+      branch.set(prop);
     },
-    delete: function(name) {
-      if (name in branch) {
+    delete: function(prop) {
+      if (prop in branch) {
         throw new Error("Cannot use this name as a preference");
       }
-      branch.delete(name);
+      branch.delete(prop);
     },
-    has: function(name) {
-      if (name in branch) {
+    has: function(prop) {
+      if (prop in branch) {
         throw new Error("Cannot use this name as a preference");
       }
-      log(LOG_DEBUG, "prefproxy: has pref " + branch.branch +  name);
-      return branch.has(name);
+      log(LOG_DEBUG, "prefproxy: has pref " + branch.branch +  prop);
+      return branch.has(prop);
    }
   });
+  return prefProxy;
 }
 
 function Branch(branch) {
