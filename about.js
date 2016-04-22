@@ -53,7 +53,7 @@ function formatBytes(b) {
 
 function sortResults(a, b) {
   // size descending
-  let rv = b.bytes - a.bytes;
+  var rv = b.bytes - a.bytes;
   if (!rv) {
     // else name ascending
     rv = a.name < b.name ? -1 : 1;
@@ -64,10 +64,10 @@ function sortResults(a, b) {
 const resolveAboutURI = (function() {
   let resolved = new Map();
   return function resolveAboutURI(uri) {
-    let mod = uri.path.replace(/#\?.*$/i, "");
-    let rv = resolved.get(mod);
+    var mod = uri.path.replace(/#\?.*$/i, "");
+    var rv = resolved.get(mod);
     if (!rv) {
-      let c = Services.io.newChannelFromURI2(uri, null, null, null, null, null, null);
+      var c = Services.io.newChannelFromURI2(uri, null, null, null, null, null, null);
       rv = c.URI.clone();
       if (rv.equals(uri)) {
         throw new Error("cannot resolve about URI");
@@ -105,7 +105,7 @@ function resolveURI(uri) {
 
 function $(id) document.getElementById(id);
 function $e(tag, attrs, text) {
-  let e = document.createElement(tag);
+  var e = document.createElement(tag);
   if (attrs) {
     for (let [k,v] in Iterator(attrs)) {
       e.setAttribute(k, v);
@@ -135,7 +135,7 @@ function process(addons) {
     let m, spec;
     if (m = path.match(re_jscompartment)) {
       m = m[1].match(re_compartment);
-      let syscomp = !!m[1];
+      var syscomp = !!m[1];
       spec = m[2];
       if (m[3] && (!syscomp || !re_schemes.test(spec))) {
         spec = m[3].split(" -> ").pop();
@@ -183,7 +183,7 @@ function process(addons) {
     // map reports to addons
     for (let [c, b] in Iterator(compartments)) {
       try {
-        let spec = resolveURI(Services.io.newURI(c, null, null)).spec;
+        var spec = resolveURI(Services.io.newURI(c, null, null)).spec;
         if (!mapSpecToAddon(spec, b)) {
           throw new Error("not an addon uri:" + spec);
         }
