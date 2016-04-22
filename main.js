@@ -18,7 +18,7 @@ AboutModule.prototype = {
     chan.originalURI = aURI;
     return chan;
   },
-  getURIFlags: function(aURI) 0
+  getURIFlags: function(aURI) {return 0}
 };
 
 (function registerComponents() {

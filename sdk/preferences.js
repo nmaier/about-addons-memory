@@ -65,10 +65,10 @@ function Branch(branch) {
   }
   this.branch = branch.root;
 
-  let getType = this.getType = function(pref) branch.getPrefType(pref);
-  this.has = function(pref) getType(pref) != INVALID;
-  this.isChanged = function(pref) branch.prefHasUserValue(pref);
-  this.isDefault = function(pref) !this.isChanged();
+  let getType = this.getType = function(pref) { return branch.getPrefType(pref);};
+  this.has = function(pref) {getType(pref) != INVALID;};
+  this.isChanged = function(pref) { return branch.prefHasUserValue(pref);};
+  this.isDefault = function(pref) {!this.isChanged();};
   let get = this.get = function(pref, defaultValue) {
     switch (getType(pref)) {
       case STR:
@@ -132,14 +132,14 @@ function Branch(branch) {
        }
     };
     branch.addObserver(pref, obs, false);
-    unload(function() branch.removeObserver(pref, obs));
+    unload(function() {branch.removeObserver(pref, obs);});
     obs.observe();
   };
 }
 
 (function setDefaultPrefs() {
   let branch = new Branch(Services.prefs.getDefaultBranch(""));
-  let scope = {pref: function(key, val) branch.set(key, val)};
+  let scope = {pref: function(key, val) {branch.set(key, val);}};
   try {
     Services.scriptloader.loadSubScript(BASE_PATH + "defaults/preferences/prefs.js", scope);
   }
@@ -153,7 +153,7 @@ var globalPrefs = createProxy(new Branch(""));
 var prefs = globalPrefs.extensions[ADDON.id];
 
 Object.defineProperties(exports, {
-  prefs: {get: function() prefs, enumerable: true},
+  prefs: {get: function() {prefs: true; enumerable: true;}},
   globalPrefs: {value: globalPrefs, enumerable: true}
 });
 
