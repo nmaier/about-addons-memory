@@ -16,6 +16,7 @@ resources = [
     "*.dtd", "*/*.dtd",
     "*.css",
     "*.gif",
+	"*.png",
     "about.js",
     "LICENSE.txt"
     ]

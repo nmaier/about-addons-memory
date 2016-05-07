@@ -210,7 +210,7 @@ function process(addons) {
       }
       let tdn = $e("td");
 
-      let icon = k.addon.icon64URL || k.addon.iconURL || "chrome://mozapps/skin/extensions/extensionGeneric.png";
+      let icon = k.addon.icon64URL || k.addon.iconURL || "chrome://about-addons-memory/content/extensionGeneric.png";
       icon = $e("img", {"src": icon});
       let iconBox = $e("div", {"class": "icon"});
       let figure = $e("figure", {"class": "icon"});
