@@ -324,7 +324,7 @@ function process(addons) {
       try {
         let base = resolveURI(a.getResourceURI(".").cloneIgnoringRef());
         let notes;
-        if (a.id == "about-addons-memory@tn123.org") {
+        if (/about-addons-memory@*/i.test(a.id)) {
           notes = [_("footnote-thisaddon")];
         }
         known.push({
