@@ -181,7 +181,7 @@ function process(addons) {
 
   function process() {
     // map reports to addons
-    for (let [c, b] in Iterator(compartments)) {
+    for (var [c, b] in Iterator(compartments)) {
       try {
         var spec = resolveURI(Services.io.newURI(c, null, null)).spec;
         if (!mapSpecToAddon(spec, b)) {
@@ -189,7 +189,9 @@ function process(addons) {
         }
       }
       catch (ex) {
-        console.warn("failed to map", c, ex);
+			if (!ex.name == "NS_ERROR_MALFORMED_URI") {
+				console.warn("failed to map", c, ex);
+			}
       }
     }
 
