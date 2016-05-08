@@ -20,6 +20,10 @@ body {
   }
 }
 
+a {
+	color: #00A8E5;
+}
+
 table {
   border-collapse: collapse;
   width: 100%;
@@ -118,5 +122,5 @@ th:not([id]) {
 
 .bar {
   height: 1.5em;
-  background: navy;
+  background: #00A8E5;
 }
