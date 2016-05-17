@@ -67,7 +67,12 @@ const resolveAboutURI = (function() {
     var mod = uri.path.replace(/#\?.*$/i, "");
     var rv = resolved.get(mod);
     if (!rv) {
-      var c = Services.io.newChannelFromURI2(uri, null, null, null, null, null, null);
+		var c; //Support older versions down to version 29.0
+	  if (parseInt(Services.appinfo.version) >= 38) {
+		c = Services.io.newChannelFromURI2(uri, null, null, null, null, null, null);
+	  } else {
+		c = Services.io.newChannelFromURI(uri);
+	  }
       rv = c.URI.clone();
       if (rv.equals(uri)) {
         throw new Error("cannot resolve about URI");
