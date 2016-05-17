@@ -4,7 +4,7 @@
 "use strict";
 
 const global = this;
-const BUTTON_ID = "about-addons-memory-btn";
+const BUTTON_ID = "about-addons-memory-btn"; //Button ID for widget
 var {CustomizableUI} = Components.utils.import("resource:///modules/CustomizableUI.jsm", {});
 var {Services} = Components.utils.import("resource://gre/modules/Services.jsm", {});
 
@@ -53,6 +53,7 @@ function ReuseFeaturesTab(attrName, url) {
 }
 
 var CUIWidgetListener = {
+		//Set icon type when widget added to area, Backedup with styleSheet.
         onWidgetAdded: function(aWidgetId, aArea, aPosition) {
             if (aWidgetId != BUTTON_ID ) {
                 return
@@ -73,6 +74,7 @@ var CUIWidgetListener = {
             }
 
         },
+		//Remove WidgetListener when widget destroyed
         onWidgetDestroyed: function(aWidgetId) {
             if (aWidgetId != BUTTON_ID ) {
                 return;
@@ -82,6 +84,7 @@ var CUIWidgetListener = {
 };
 
 var initStyle = {
+	//Load styleSheet
 	init : function() {
 		try {
 			 sss = Components.classes["@mozilla.org/content/style-sheet-service;1"].getService(Components.interfaces.nsIStyleSheetService);
@@ -93,6 +96,7 @@ var initStyle = {
 			}
 		}catch(e){}
 	},
+	//Unload styleSheet
 	uninit : function() {
 		try {
 			if ( sss === null ) {
@@ -108,26 +112,29 @@ var initStyle = {
 };
 
 function startup(data) {
-	//Add CustomizableUI wiget listener
+	//Add CustomizableUI widget listener
     CustomizableUI.addListener(CUIWidgetListener);
     CustomizableUI.createWidget({
         id: BUTTON_ID ,
         defaultArea: CustomizableUI.AREA_NAVBAR,
         label: 'about:addons-memory',
-        tooltiptext: 'This button will open about:addons-memory in a browser tab.',
+        tooltiptext: 'This button will open about:addons-memory in a browser tab.', //Potential to be localized
 		onCommand: function(aEvent) {
-			ReuseFeaturesTab("aboutaddonsmemory", "about:addons-memory");
+			ReuseFeaturesTab("aboutaddonsmemory", "about:addons-memory"); //Prevents multiple about:addons-memory tabs
 		}
     });
+	
+  	//Load styleSheet
 	initStyle.init();
-	// will unload itself
+	
+	//Will unload itself
 	Components.utils.import("chrome://about-addons-memory/content/loader.jsm");
-	_setupLoader(data, function real_startup() {
-	try {
-		require("main");
-	}catch (ex) {
-		Components.utils.reportError(ex);
-	}
+		_setupLoader(data, function real_startup() {
+		try {
+			require("main");
+		}catch (ex) {
+			Components.utils.reportError(ex);
+		}
 	});
 }
 
@@ -136,7 +143,9 @@ function shutdown(reason) {
     // No need to cleanup; stuff will vanish anyway
     return;
   }
+  //Destroy toolbar button on shutdown
   CustomizableUI.destroyWidget(BUTTON_ID);
+  //Unload styleSheet
   initStyle.uninit();
   unload("shutdown");
 }

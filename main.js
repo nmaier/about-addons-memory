@@ -16,8 +16,10 @@ AboutModule.prototype = {
   newChannel : function(aURI) {
     var chan; //Support older versions down to version 29.0
 		if (parseInt(Services.appinfo.version) >= 38) {
+      //Available 38.0 and up.
 			chan = Services.io.newChannelFromURI2(this.uri, null, null, null, null, null, null);
 		} else {
+      //Depreciated use only in versions below 38.0 to 29.0
 			chan = Services.io.newChannelFromURI(this.uri);
 		}
     chan.originalURI = aURI;

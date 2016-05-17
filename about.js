@@ -69,9 +69,11 @@ const resolveAboutURI = (function() {
     if (!rv) {
 		var c; //Support older versions down to version 29.0
 	  if (parseInt(Services.appinfo.version) >= 38) {
-		c = Services.io.newChannelFromURI2(uri, null, null, null, null, null, null);
+      //Available 38.0 and up. 
+      c = Services.io.newChannelFromURI2(uri, null, null, null, null, null, null);
 	  } else {
-		c = Services.io.newChannelFromURI(uri);
+      //Depreciated use only in versions below 38.0 to 29.0
+      c = Services.io.newChannelFromURI(uri);
 	  }
       rv = c.URI.clone();
       if (rv.equals(uri)) {
