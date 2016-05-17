@@ -14,6 +14,44 @@ var styleSheetUri = null;
 function install() {}
 function uninstall() {}
 
+function ReuseFeaturesTab(attrName, url) {
+	try{		
+			var tabbrowser = Services.wm.getEnumerator("navigator:browser").getNext().gBrowser;
+		
+			for (var found = false, index = 0; index < tabbrowser.tabContainer.childNodes.length && !found; index++) {
+
+				// Get the next tab
+				var currentTab = tabbrowser.tabContainer.childNodes[index];
+			  
+				// Does this tab contain our custom attribute or name?
+				//Incase of browser restart use currentTab.label to identify our tab.
+				if (currentTab.hasAttribute(attrName) || currentTab.label == url) {
+					
+				// Yes--select and focus it.
+				tabbrowser.selectedTab = currentTab;
+
+				// Focus *this* browser window in case another one is currently focused
+				tabbrowser.ownerDocument.defaultView.focus();
+				found = true;
+			}
+		}
+
+		if (!found) {
+			// Our tab isn't open. Open it now.
+			  
+			// Create tab
+			var newTab = tabbrowser.addTab(url);
+			newTab.setAttribute(attrName, "aboutaddonsmemory");
+			  
+			// Focus tab
+			tabbrowser.selectedTab = newTab;
+				
+			// Focus *this* browser window in case another one is currently focused
+			tabbrowser.ownerDocument.defaultView.focus();
+		}			  
+	}catch (e){}
+}
+
 var CUIWidgetListener = {
         onWidgetAdded: function(aWidgetId, aArea, aPosition) {
             if (aWidgetId != BUTTON_ID ) {
@@ -78,8 +116,7 @@ function startup(data) {
         label: 'about:addons-memory',
         tooltiptext: 'This button will open about:addons-memory in a browser tab.',
 		onCommand: function(aEvent) {
-			var aDOMWindow = Services.wm.getMostRecentWindow('navigator:browser');
-			aDOMWindow.gBrowser.selectedTab = aDOMWindow.openUILinkIn("about:addons-memory", 'tab', {relatedToCurrent:true});
+			ReuseFeaturesTab("aboutaddonsmemory", "about:addons-memory");
 		}
     });
 	initStyle.init();
