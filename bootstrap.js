@@ -5,7 +5,7 @@
 
 const global = this;
 const BUTTON_ID = "about-addons-memory-btn"; //Button ID for widget
-var {CustomizableUI} = Components.utils.import("resource:///modules/CustomizableUI.jsm", {});
+var CustomizableUI = null;
 var {Services} = Components.utils.import("resource://gre/modules/Services.jsm", {});
 
 var sss = null;
@@ -112,21 +112,27 @@ var initStyle = {
 };
 
 function startup(data) {
-	//Add CustomizableUI widget listener
-    CustomizableUI.addListener(CUIWidgetListener);
-    CustomizableUI.createWidget({
-        id: BUTTON_ID ,
-        defaultArea: CustomizableUI.AREA_NAVBAR,
-        label: 'about:addons-memory',
-        tooltiptext: 'This button will open about:addons-memory in a browser tab.', //Potential to be localized
-		onCommand: function(aEvent) {
-			ReuseFeaturesTab("aboutaddonsmemory", "about:addons-memory"); //Prevents multiple about:addons-memory tabs
-		}
-    });
+	//Test for CustomizableUI support to allow running on firefox 24 and up.
+	try {
+		CustomizableUI = Components.utils.import("resource:///modules/CustomizableUI.jsm", null).CustomizableUI;
+	}catch(e){CustomizableUI = null;}
 	
-  	//Load styleSheet
-	initStyle.init();
-	
+	if (CustomizableUI !== null) {
+		//Add CustomizableUI widget listener
+		CustomizableUI.addListener(CUIWidgetListener);
+		CustomizableUI.createWidget({
+			id: BUTTON_ID ,
+			defaultArea: CustomizableUI.AREA_NAVBAR,
+			label: 'about:addons-memory',
+			tooltiptext: 'This button will open about:addons-memory in a browser tab.', //Potential to be localized
+			onCommand: function(aEvent) {
+				ReuseFeaturesTab("aboutaddonsmemory", "about:addons-memory"); //Prevents multiple about:addons-memory tabs
+			}
+		});
+		
+		//Load styleSheet
+		initStyle.init();
+	}	
 	//Will unload itself
 	Components.utils.import("chrome://about-addons-memory/content/loader.jsm");
 		_setupLoader(data, function real_startup() {
@@ -143,10 +149,12 @@ function shutdown(reason) {
     // No need to cleanup; stuff will vanish anyway
     return;
   }
-  //Destroy toolbar button on shutdown
-  CustomizableUI.destroyWidget(BUTTON_ID);
-  //Unload styleSheet
-  initStyle.uninit();
+	if (CustomizableUI !== null) {
+	  //Destroy toolbar button on shutdown
+	  CustomizableUI.destroyWidget(BUTTON_ID);
+	  //Unload styleSheet
+	  initStyle.uninit();
+	}
   unload("shutdown");
 }
 
