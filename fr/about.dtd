@@ -6,6 +6,7 @@
 <!ENTITY explicit.label "/total">
 <!ENTITY explicit.tip "Consommation spécifique par rapport à la consommation mémoire totale (y compris les pages web, etc.)">
 <!ENTITY minimize.label "Limiter la consommation mémoire">
+<!ENTITY refresh.label "Refresh Report">
 <!ENTITY note.label "Note :">
 <!ENTITY remark.count.label "Beaucoup de modules, en particulier ceux qui ne sont pas des JetPacks, peuvent comporter des couches dynamiques ou statiques qui ajoutent des scripts, des nœuds DOM ou des styles directement au navigateur. Tout cela ne peut être distingué du navigateur lui-même et donc ne peut être calculé par cette extension. Il s'ensuit que la consommation mémoire réelle des modules peut s'avérer bien plus élevée que celle qui est calculée ici !">
 <!ENTITY remark.conclusion.label "Les modules qui consomment moins de quelques centaines de mégaoctets de mémoire ne posent pas de problèmes, du moins du point de vue de l'utilisation de la mémoire. Toutefois, si un module utilise vraiment une énorme quantité de mémoire, ou bien si cette consommation est de plus en plus importante même si tous les onglets sont fermés, alors il se pourrait bien qu'il y ait un vrai problème.">

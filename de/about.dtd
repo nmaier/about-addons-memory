@@ -6,6 +6,7 @@
 <!ENTITY explicit.label "Explizit">
 <!ENTITY explicit.tip "Relativer Verbrauch im Vegleich zur gesamten Anwendung (incl. Webseiten, Bilder, etc.)">
 <!ENTITY minimize.label "Speicherverbrauch verringern">
+<!ENTITY refresh.label "Refresh Report">
 <!ENTITY note.label "Hinweis:">
 <!ENTITY remark.count.label "Viele Add-ons, insbesondere wenn kein JetPack, können statische oder dynamische Overlays beinhalten, die Skripte, DOM oder Styles zum Browser hinzufügen können. Solche Dinge können nicht vom Browser selbst unterschieden werden und und tauchen daher nicht beim betreffenden Add-on auf. Daher kann die tatsächliche Speichernutzung eines Add-on deutlich höher sein als hier angezeigt">
 <!ENTITY remark.conclusion.label "Add-ons, die weniger als ein paar hundert Megabyte Speicher benötigen, sind normalerweise kein Problem, zumindest vom Speicherverbrauch her. Aber sollte ein Add-on wirklich gewaltige Mengen Speicher benötigen, bzw. sollte der Speicherverbrauch eines Add-ons über die Zeit stetig steigen, so *kann* das auf ein Problem hindeuten.">
