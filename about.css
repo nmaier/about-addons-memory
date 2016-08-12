@@ -1,6 +1,7 @@
 @import url(chrome://global/skin/about.css);
 
 html {
+  font-family: message-box, sans-serif;
   font-size: 16px;
 }
 body {
