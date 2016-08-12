@@ -17,6 +17,10 @@ const ChromeRegistry = Cc["@mozilla.org/chrome/chrome-registry;1"].getService(Ci
 const MemoryReporterManager = Cc["@mozilla.org/memory-reporter-manager;1"].getService(Ci.nsIMemoryReporterManager);
 const ResProtoHandler = Services.io.getProtocolHandler("resource").QueryInterface(Ci.nsIResProtocolHandler);
 const MainThread = Services.tm.mainThread;
+const NOFRAC = {maximumFractionDigits: 0};
+const ONEFRAC = {maximumFractionDigits: 1};
+const TWOFRAC = {maximumFractionDigits: 2};
+const THREEFRAC = {maximumFractionDigits: 3};
 
 function _(id) {
   return document.body.getAttribute("data-" + id);
@@ -42,13 +46,19 @@ function minimizeMemoryUsage(callback) {
 }
 
 function formatBytes(b) {
-  if (b < 900) return b.toFixed(0) + " bytes";
+  if (b < 900) {
+    return b.toLocaleString(undefined, NOFRAC) + " bytes";
+  }
   b /= 1024;
-  if (b < 900) return b.toFixed(1) + " KB";
+  if (b < 900) {
+    return b.toLocaleString(undefined, ONEFRAC) + " KB";
+  }
   b /= 1024;
-  if (b < 900) return b.toFixed(2) + " MB";
+  if (b < 900) {
+    return b.toLocaleString(undefined, TWOFRAC) + " MB";
+  }
   b /= 1024;
-  return b.toFixed(3) + " GB";
+  return b.toLocaleString(undefined, THREEFRAC) + " GB";
 }
 
 function sortResults(a, b) {
@@ -252,9 +262,9 @@ function process(addons) {
       tr.appendChild($e("td", {"data-value": k.bytes}, formatBytes(k.bytes)));
 
       let pa = k.bytes / totalAddons;
-      let spa = (pa * 100.0).toFixed(1) + "%";
+      let spa = (pa * 100.0).toLocaleString(undefined, ONEFRAC) + "%";
       let pe = k.bytes / rss;
-      let spe = (pe * 100.0).toFixed(1) + "%";
+      let spe = (pe * 100.0).toLocaleString(undefined, ONEFRAC) + "%";
       let scale = (k.bytes / maxAddonBytes * 100.0).toFixed(1) + "%";
 
       tr.appendChild($e("td", {"data-value": pa}, spa));
@@ -270,7 +280,7 @@ function process(addons) {
     tr.appendChild($e("td", null, "Total"));
     tr.appendChild($e("td", null, formatBytes(totalAddons)));
     tr.appendChild($e("td", null, "100%"));
-    tr.appendChild($e("td", null, (totalAddons / rss * 100.0).toFixed(1) + "%"));
+    tr.appendChild($e("td", null, (totalAddons / rss * 100.0).toLocaleString(undefined, ONEFRAC) + "%"));
     fragment.appendChild(tr);
 
     $("tbody").appendChild(fragment);
