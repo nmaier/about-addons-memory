@@ -210,7 +210,7 @@ function process(addons) {
       }
       let tdn = $e("td");
 
-      let icon = k.addon.icon64URL || k.addon.iconURL || "chrome://mozapps/skin/extensions/extensionGeneric.png";
+      let icon = k.addon.icon64URL || k.addon.iconURL || "chrome://mozapps/skin/extensions/extensionGeneric.svg";
       icon = $e("img", {"src": icon});
       let iconBox = $e("div", {"class": "icon"});
       let figure = $e("figure", {"class": "icon"});
@@ -275,7 +275,8 @@ function process(addons) {
 
     $("tbody").appendChild(fragment);
 
-    let (l = $("loading")) {
+    {
+      let l = $("loading");
       l.parentNode.removeChild(l);
     }
   }
