@@ -13,8 +13,20 @@ AboutModule.prototype = {
 
   QueryInterface: XPCOMUtils.generateQI([Ci.nsIAboutModule]),
 
-  newChannel : function(aURI) {
-    let chan = Services.io.newChannelFromURI(this.uri);
+  newChannel: function(aURI) {
+    let chan;
+    try {
+      chan = Services.io.newChannelFromURI2(
+        this.uri,
+        null,
+        Services.scriptSecurityManager.getSystemPrincipal(),
+        null,
+        Ci.nsILoadInfo.SEC_ALLOW_CROSS_ORIGIN_DATA_IS_NULL,
+        Ci.nsIContentPolicy.TYPE_OTHER);
+    }
+    catch (ex) {
+      chan = Services.io.newChannelFromURI(this.uri);
+    }
     chan.originalURI = aURI;
     return chan;
   },
