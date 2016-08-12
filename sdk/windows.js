@@ -205,6 +205,17 @@ exports.registerOverlay = function registerOverlay(src, location, callback) {
   }
   _r.overrideMimeType("application/xml");
   _r.open("GET", BASE_PATH + src);
+  // Elevate the request, so DTDs will work. Not a security issue since we
+  // always load from BASE_PATH, and that is our privileged chrome package.
+  // This is no different than regular overlays.
+  let sec = Cc['@mozilla.org/scriptsecuritymanager;1'].
+            getService(Ci.nsIScriptSecurityManager);
+  try {
+      _r.channel.owner = sec.getSystemPrincipal();
+  }
+  catch (ex) {
+    log(LOG_ERROR, "Failed to set system principal");
+  }
   _r.send();
 };
 

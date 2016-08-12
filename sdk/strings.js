@@ -10,6 +10,7 @@ function Bundle(uri) {
     if (!bundleFlush) {
       bundleFlush = unload(() => Services.strings.flushBundles());
     }
+    log(LOG_DEBUG, `loading bundle ${uri}`);
     return Services.strings.createBundle(uri);
   });
   this._dict = Object.create(null);
@@ -20,10 +21,15 @@ Bundle.prototype = {
       let args = Array.slice(arguments, 1);
       return this._bundle.formatStringFromName(id, args, args.length);
     }
-    return this._bundle.getStringFromName(id);
+    return this._bundle.GetStringFromName(id);
   }
 };
 
-Object.defineProperty(exports, "getBundle", {value: uri => new Bundle(uri)});
+Object.defineProperty(exports, "getBundle", {value: uri => {
+  let bundle = new Bundle(uri);
+  let rv = bundle.getString.bind(bundle);
+  rv.getString = rv;
+  return rv;
+}});
 
 /* vim: set et ts=2 sw=2 : */
