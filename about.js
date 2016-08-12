@@ -22,7 +22,9 @@ function _(id) {
   return document.body.getAttribute("data-" + id);
 }
 
-function runSoon(f) MainThread.dispatch(f, 0);
+function runSoon(f) {
+  MainThread.dispatch(f, 0);
+}
 function minimizeMemoryUsage(callback) {
   function notify(i) {
     Services.obs.notifyObservers(null, "memory-pressure", "heap-minimize");
@@ -110,7 +112,9 @@ function resolveURI(uri) {
   }
 }
 
-function $(id) document.getElementById(id);
+function $(id) {
+  return document.getElementById(id);
+}
 function $e(tag, attrs, text) {
   var e = document.createElement(tag);
   if (attrs) {

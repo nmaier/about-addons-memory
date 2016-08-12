@@ -4,12 +4,12 @@
    - You can obtain one at http://mozilla.org/MPL/2.0/.  -->
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
   <Description about="urn:mozilla:install-manifest">
-    <em:id>about-addons-memory@tn123.org</em:id>
+    <em:id>about-addons-memory@8pecxstudios.com</em:id>
     <em:name>about:addons-memory</em:name>
     <em:description>Adds an about:addons-memory page that details add-on memory usage</em:description>
-    <em:version>11.2</em:version>
-    <em:creator>Nils Maier</em:creator>
-	<em:contributor>Toady</em:contributor>
+    <em:version>11.3</em:version>
+    <em:creator>Toady</em:creator>
+	  <!-- <em:creator>(Original Creator) Nils Maier</em:creator> -->
 
     <em:bootstrap>true</em:bootstrap>
     <em:type>2</em:type>
