@@ -6,6 +6,7 @@
 <!ENTITY explicit.label "Explicit">
 <!ENTITY explicit.tip "すべてのアプリケーションのメモリ使用量と比べた使用率(Webサイトなどを含む)">
 <!ENTITY minimize.label "メモリ使用量を最小化する">
+<!ENTITY refresh.label "Refresh Report">
 <!ENTITY note.label "注意:">
 <!ENTITY remark.count.label "多くのアドオン特に非Jetpackのものは、直接ブラウザにスクリプト、DOM 及びスタイルを追加することができ、静的または動的なオーバーレイを含むことができます。その場合、ブラウザ自体と区別することができないためアドオンに算入することができません。その結果、実際のアドオンメモリ使用量がここで表示されてるよりも高い場合があります！">
 <!ENTITY remark.conclusion.label "アドオンのメモリ使用量が１００M以下の場合は最近のメモリ使用量の観点からすると一般的には問題ありません。しかし、アドオンのメモリ使用量が時間の経過により増加した場合は問題になるかもしれません。">

@@ -10,11 +10,13 @@
     <title>about:addons-memory</title>
     <meta content="width=800" name="viewport"/>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <script src="chrome://about-addons-memory/content/about.js" type="text/javascript;version=1.8"></script>
+    <link rel="icon" type="image/png" id="favicon"
+          href="chrome://about-addons-memory/content/icon32.png"/>
     <link rel="stylesheet" type="text/css" href="chrome://about-addons-memory/content/about.css"/>
+    <script src="chrome://about-addons-memory/content/about.js" type="text/javascript;version=1.8"></script>
   </head>
   <body data-footnote-locations="&footnote.locations.label;" data-footnote-thisaddon="&footnote.thisaddon.label;" data-by="&by.label;">
-    <h1>about:addons-memory</h1>
+    <h1 style="text-align: center">about:addons-memory</h1>
     <table>
       <thead>
         <tr>
@@ -27,7 +29,7 @@
       </thead>
       <tbody id="tbody"><td id="loading" class="loading" colspan="5"></td></tbody>
     </table>
-    <p><button onclick="minimizeMemoryUsage(function() location.reload());">&minimize.label;</button></p>
+    <p><button onclick="minimizeMemoryUsage(function() location.reload());">&minimize.label;</button> <button onclick="document.location.reload(false);">&refresh.label;</button></p>
     <p class="remark"><strong>&note.label;</strong> &remark.count.label;</p>
     <p class="remark">&remark.conclusion.label;</p>
   </body>

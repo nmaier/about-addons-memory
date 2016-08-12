@@ -6,6 +6,7 @@
 <!ENTITY explicit.label "Program">
 <!ENTITY explicit.tip "Relativ användning jämfört med programmets totala minnesanvändning (inkl. webbplatser, o.s.v.)">
 <!ENTITY minimize.label "Minimera minnesanvändningen">
+<!ENTITY refresh.label "Refresh Report">
 <!ENTITY note.label "Obs!">
 <!ENTITY remark.count.label " Många tillägg, särskilt sådana som inte bygger på JetPack, innehåller statiska eller dynamiska överlägg som kan lägga till skript, DOM eller format direkt i webbläsaren. Sådana importerade saker kan inte skiljas från själva webbläsaren och kan således inte tillräknas tillägget. På grund av det kan tilläggsminnesanvändningen vara mycket högre än den som rapporteras här!">
 <!ENTITY remark.conclusion.label "Tillägg som använder mindre än några hundratal MB av minnet orsakar vanligtvis inga problem, åtminstone ur minnesanvändningssynvinkel. Emellertid, om ett tillägg använder en stor mängd minne och/eller om ett tilläggs minnesanvändning stadigt ökar med tiden oavsett hur många flikar du stänger, så *kan* det tyda på ett problem.">

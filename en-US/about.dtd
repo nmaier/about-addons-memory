@@ -6,6 +6,7 @@
 <!ENTITY explicit.label "Explicit">
 <!ENTITY explicit.tip "Relative usage compared to total application memory usage (incl. websites, etc.)">
 <!ENTITY minimize.label "Minimize memory usage">
+<!ENTITY refresh.label "Refresh Report">
 <!ENTITY note.label "Note:">
 <!ENTITY remark.count.label "Many Add-ons, especially non-JetPack ones, may include static or dynamic overlays that may add scripts, DOM or styles directly to the browser. Such things cannot be distinguished from the browser itself and hence cannot be counted towards the add-on. As a result the actual add-on memory usage may be a lot higher than reported here!">
 <!ENTITY remark.conclusion.label "Add-ons using less than hundreds of mega bytes of memory are typically not an issue, at least from a memory usage point of view. However, should an add-on really use a massive amount of memory, and/or should an add-on's memory use steadily grow over time no matter how many tabs you close, then this *might* be indicating a problem.">

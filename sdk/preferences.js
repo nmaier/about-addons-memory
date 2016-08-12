@@ -19,36 +19,38 @@ const {
 } = Ci.nsIPrefBranch;
 
 function createProxy(branch) {
-  return Proxy.create({
-    get: function(receiver, name) {
-      if (name in branch) {
-        log(LOG_DEBUG, "prefproxy: returning plain " + name);
-        return branch[name];
+  var prefProxy = new Proxy({},	  
+{
+    get: function(obj, prop) {
+      if (prop in branch) {
+        log(LOG_DEBUG, "prefproxy: returning plain " + prop);
+        return branch[prop];
       }
-      log(LOG_DEBUG, "prefproxy: returning pref " + branch.branch + name);
-      return branch.get(name);
+      log(LOG_DEBUG, "prefproxy: returning pref " + branch.branch + prop);
+      return branch.get(prop);
     },
-    set: function(receiver, name, value) {
-      if (name in branch) {
+    set: function(obj, prop, value) {
+      if (prop in branch) {
         throw new Error("Cannot use this name as a preference");
       }
-      log(LOG_DEBUG, "prefproxy: setting pref " + branch.branch +  name);
-      branch.set(name);
+      log(LOG_DEBUG, "prefproxy: setting pref " + branch.branch +  prop);
+      branch.set(prop);
     },
-    delete: function(name) {
-      if (name in branch) {
+    delete: function(prop) {
+      if (prop in branch) {
         throw new Error("Cannot use this name as a preference");
       }
-      branch.delete(name);
+      branch.delete(prop);
     },
-    has: function(name) {
-      if (name in branch) {
+    has: function(prop) {
+      if (prop in branch) {
         throw new Error("Cannot use this name as a preference");
       }
-      log(LOG_DEBUG, "prefproxy: has pref " + branch.branch +  name);
-      return branch.has(name);
+      log(LOG_DEBUG, "prefproxy: has pref " + branch.branch +  prop);
+      return branch.has(prop);
    }
   });
+  return prefProxy;
 }
 
 function Branch(branch) {
@@ -63,10 +65,10 @@ function Branch(branch) {
   }
   this.branch = branch.root;
 
-  let getType = this.getType = function(pref) branch.getPrefType(pref);
-  this.has = function(pref) getType(pref) != INVALID;
-  this.isChanged = function(pref) branch.prefHasUserValue(pref);
-  this.isDefault = function(pref) !this.isChanged();
+  let getType = this.getType = function(pref) { return branch.getPrefType(pref);};
+  this.has = function(pref) {getType(pref) != INVALID;};
+  this.isChanged = function(pref) { return branch.prefHasUserValue(pref);};
+  this.isDefault = function(pref) {!this.isChanged();};
   let get = this.get = function(pref, defaultValue) {
     switch (getType(pref)) {
       case STR:
@@ -130,14 +132,14 @@ function Branch(branch) {
        }
     };
     branch.addObserver(pref, obs, false);
-    unload(function() branch.removeObserver(pref, obs));
+    unload(function() {branch.removeObserver(pref, obs);});
     obs.observe();
   };
 }
 
 (function setDefaultPrefs() {
   let branch = new Branch(Services.prefs.getDefaultBranch(""));
-  let scope = {pref: function(key, val) branch.set(key, val)};
+  let scope = {pref: function(key, val) {branch.set(key, val);}};
   try {
     Services.scriptloader.loadSubScript(BASE_PATH + "defaults/preferences/prefs.js", scope);
   }
@@ -151,7 +153,7 @@ var globalPrefs = createProxy(new Branch(""));
 var prefs = globalPrefs.extensions[ADDON.id];
 
 Object.defineProperties(exports, {
-  prefs: {get: function() prefs, enumerable: true},
+  prefs: {get: function() {prefs: true; enumerable: true;}},
   globalPrefs: {value: globalPrefs, enumerable: true}
 });
 

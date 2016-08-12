@@ -22,7 +22,9 @@ function _(id) {
   return document.body.getAttribute("data-" + id);
 }
 
-function runSoon(f) MainThread.dispatch(f, 0);
+function runSoon(f) {
+  MainThread.dispatch(f, 0);
+}
 function minimizeMemoryUsage(callback) {
   function notify(i) {
     Services.obs.notifyObservers(null, "memory-pressure", "heap-minimize");
@@ -53,7 +55,7 @@ function formatBytes(b) {
 
 function sortResults(a, b) {
   // size descending
-  let rv = b.bytes - a.bytes;
+  var rv = b.bytes - a.bytes;
   if (!rv) {
     // else name ascending
     rv = a.name < b.name ? -1 : 1;
@@ -64,10 +66,17 @@ function sortResults(a, b) {
 const resolveAboutURI = (function() {
   let resolved = new Map();
   return function resolveAboutURI(uri) {
-    let mod = uri.path.replace(/#\?.*$/i, "");
-    let rv = resolved.get(mod);
+    var mod = uri.path.replace(/#\?.*$/i, "");
+    var rv = resolved.get(mod);
     if (!rv) {
-      let c = Services.io.newChannelFromURI(uri);
+		var c; //Support older versions down to version 29.0
+	  if (parseInt(Services.appinfo.version) >= 38) {
+      //Available 38.0 and up. 
+      c = Services.io.newChannelFromURI2(uri, null, null, null, null, null, null);
+	  } else {
+      //Depreciated use only in versions below 38.0 to 29.0
+      c = Services.io.newChannelFromURI(uri);
+	  }
       rv = c.URI.clone();
       if (rv.equals(uri)) {
         throw new Error("cannot resolve about URI");
@@ -103,9 +112,11 @@ function resolveURI(uri) {
   }
 }
 
-function $(id) document.getElementById(id);
+function $(id) {
+  return document.getElementById(id);
+}
 function $e(tag, attrs, text) {
-  let e = document.createElement(tag);
+  var e = document.createElement(tag);
   if (attrs) {
     for (let [k,v] in Iterator(attrs)) {
       e.setAttribute(k, v);
@@ -135,7 +146,7 @@ function process(addons) {
     let m, spec;
     if (m = path.match(re_jscompartment)) {
       m = m[1].match(re_compartment);
-      let syscomp = !!m[1];
+      var syscomp = !!m[1];
       spec = m[2];
       if (m[3] && (!syscomp || !re_schemes.test(spec))) {
         spec = m[3].split(" -> ").pop();
@@ -181,15 +192,17 @@ function process(addons) {
 
   function process() {
     // map reports to addons
-    for (let [c, b] in Iterator(compartments)) {
+    for (var [c, b] in Iterator(compartments)) {
       try {
-        let spec = resolveURI(Services.io.newURI(c, null, null)).spec;
+        var spec = resolveURI(Services.io.newURI(c, null, null)).spec;
         if (!mapSpecToAddon(spec, b)) {
           throw new Error("not an addon uri:" + spec);
         }
       }
       catch (ex) {
-        console.warn("failed to map", c, ex);
+			if (!ex.name == "NS_ERROR_MALFORMED_URI") {
+				console.warn("failed to map", c, ex);
+			}
       }
     }
 
@@ -210,7 +223,7 @@ function process(addons) {
       }
       let tdn = $e("td");
 
-      let icon = k.addon.icon64URL || k.addon.iconURL || "chrome://mozapps/skin/extensions/extensionGeneric.png";
+      let icon = k.addon.icon64URL || k.addon.iconURL || "chrome://about-addons-memory/content/extensionGeneric.png";
       icon = $e("img", {"src": icon});
       let iconBox = $e("div", {"class": "icon"});
       let figure = $e("figure", {"class": "icon"});
@@ -274,10 +287,7 @@ function process(addons) {
     fragment.appendChild(tr);
 
     $("tbody").appendChild(fragment);
-
-    let (l = $("loading")) {
-      l.parentNode.removeChild(l);
-    }
+    $("loading").parentNode.removeChild($("loading"));
   }
 
   try {
@@ -325,7 +335,7 @@ function process(addons) {
       try {
         let base = resolveURI(a.getResourceURI(".").cloneIgnoringRef());
         let notes;
-        if (a.id == "about-addons-memory@tn123.org") {
+        if (/about-addons-memory@*/i.test(a.id)) {
           notes = [_("footnote-thisaddon")];
         }
         known.push({
