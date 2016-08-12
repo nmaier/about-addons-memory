@@ -11,6 +11,7 @@
     <em:creator>Nils Maier</em:creator>
 
     <em:bootstrap>true</em:bootstrap>
+    <em:multiprocessCompatible>true</em:multiprocessCompatible>
     <em:type>2</em:type>
 
     <!-- Firefox -->
